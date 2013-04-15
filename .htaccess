@@ -1,0 +1,10 @@
+AuthName EnterPassword
+AuthType Basic
+
+require user test
+
+Options +FollowSymLinks
+RewriteEngine on
+RewriteRule detail-id-(.*)-colid-(.*)\.htm$ detail.php?id=$1&colid=$2	
+RewriteRule detail-id-(.*)-msg-(.*)\.htm$ detail.php?id=$1&msg=$2	
+RewriteRule detail-id-(.*)\.htm$ detail.php?id=$1

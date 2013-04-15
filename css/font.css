@@ -1,0 +1,90 @@
+/* CSS Document */
+.txt_box{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:11px;
+	color:#8c8c8c;
+	border:1px solid #c4c4c4;
+	background-image:url(../images/txt_bg.jpg);
+	background-repeat:repeat-x;
+	width: 100px;
+}
+
+.txt_box1{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:11px;
+	color:#8c8c8c;
+	border:1px solid #c4c4c4;
+	background-image:url(../images/txt_bg.jpg);
+	background-repeat:repeat-x;
+	
+}
+
+
+a.gray_link{
+	color:#3a3a3a;
+	text-decoration:none;
+}
+.gray_link:hover{
+	color:#3a3a3a;
+	text-decoration:underline;
+}
+a.gray_linkn{
+	color:#3a3a3a;
+	text-decoration:none;
+	font-weight:bold;
+}
+a.gray_linkn:hover{
+	color:#3a3a3a;
+	text-decoration:underline;
+	font-weight:bold;
+}
+a.white_link{
+	color:#ffffff;
+	font-weight:bold;
+	text-decoration:none;
+}
+a#white_link{
+	color:#ffffff;
+	font-weight:bold;
+	text-decoration:none;
+}
+a.white_link:hover{
+	color:#ffffff;
+	font-weight:bold;
+	text-decoration:underline;
+}
+
+a.brown_link{
+	color:#d66204;
+	padding-left:10px;
+	padding-right:10px;
+	text-decoration:none;
+	font-weight:bold;
+}
+.fgpass a{
+	color:#d66204;
+	padding-left:10px;
+	padding-right:10px;
+	text-decoration:none;
+	font-weight:bold;
+}
+a.brown_link:hover{
+	color:#000000;
+	padding-left:10px;
+	padding-right:10px;
+	text-decoration:none;
+	font-weight:bold;
+}
+
+.gfont_big{
+	font-size:16px;
+	font-weight:bold;
+	color:#545454;
+}
+.gfont_simp{
+	color:#545454;
+}
+.blue_bold{
+	color:#0087cb;
+	font-weight:bold;
+}

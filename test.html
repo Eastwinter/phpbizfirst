@@ -1,0 +1,2804 @@
+       
+<!DOCTYPE html PUBLIC "-//W3C//Dtd XHTML 1.0 transitional//EN" "http://www.w3.org/tr/xhtml1/Dtd/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Shoe Breeze.com</title>
+<meta name="keywords" content="shoes,adidas,sandals,boots" />
+<link rel="stylesheet" href="general.css" type="text/css" media="screen" />
+<script src="js/jquery-1.2.6.min.js" type="text/javascript"></script>
+<script src="popup.js" type="text/javascript"></script>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+<link rel="stylesheet" href="style.css" type="text/css" />
+<link media="screen" rel="stylesheet" href="colorbox.css" />
+<script src="js/jquery.min.js"></script>
+
+<script src="colorbox/jquery.colorbox.js"></script>
+<script src="js/jquery.jqzoom-core.js" type="text/javascript"></script>
+<link rel="stylesheet" href="css/jquery.jqzoom.css" type="text/css">
+<script src="js/jquery.form.js" type="text/javascript"></script>
+<script src="js/jquery.validate.js" type="text/javascript"></script>
+
+<script>
+		$(document).ready(function(){
+			//Examples of how to assign the ColorBox event to elements
+			$(".example5").colorbox();
+			$(".example7").colorbox({width:"70%", inline:true, href:"#inline_example2"});
+			$(".example8").colorbox({width:"50%", inline:true, href:"#inline_example1"});
+			$(".example9").colorbox({width:"70%", inline:true, href:"#inline_example3"});
+			$(".example10").colorbox({width:"40%", inline:true, href:"#inline_example4"});
+			$(".example11").colorbox({width:"50%", inline:true, href:"#inline_example22"});
+			$(".example99").colorbox({width:"70%",  href:"readreview.php"});
+			
+		
+
+});
+</script>
+
+
+<script type="text/javascript">
+
+
+function checkemail(){
+var str=document.newsfrm.Email.value;
+var filter=/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
+if (filter.test(str))
+testresults=true
+else{
+alert("Please input a valid email address!")
+testresults=false
+}
+return (testresults)
+}
+
+
+$(document).ready(function(){
+  $("#mybutton").click(function () { // ATTACH CLICK EVENT TO MYBUTTON
+if(document.newsfrm.Email.value=='' || document.newsfrm.ZipCode.value=='')
+  	alert("All fields required");
+else if(checkemail())
+{
+    $.post("newsletter.php",        // PERFORM AJAX POST
+      $("#newsfrm").serialize(),      // WITH SERIALIZED DATA OF MYFORM
+      function(data){                // DATA NEXT SENT TO COLORBOX
+        $.fn.colorbox({
+          html:   data,
+          open:   true,
+          iframe: false,            // NO FRAME, JUST DIV CONTAINER?
+          width:  "50%",
+        });
+      },
+      "html");
+}
+  });
+}); 
+</script> 
+ 
+ 
+<script src="js/main.js" type="text/javascript"></script>
+
+<style>
+#preview{
+	position:absolute;
+	border:1px solid #ccc;
+	background:#333;
+	padding:1px;
+	display:none;
+	color:#ccc;
+	}
+
+.zoomPreload{
+	display:none !important;
+}	
+</style>
+
+<script type="text/javascript" src="autocomplete/jquery.autocomplete.js"></script>
+<link rel="stylesheet" media="screen" href="autocomplete/jquery.autocomplete.css">
+
+<script type="text/javascript">
+function findCity(li)
+{
+	if( li == null ) 
+		return alert("No match!");
+	if( !!li.extra ) 
+		var sValue = li.extra[0];
+	else 
+		var sValue = li.selectValue;	
+	$("#cty_id").val(sValue);
+}
+function selectCity(li)
+{
+	findCity(li);
+}
+function formatItem(row)
+{
+	return row[0];
+}
+
+$(document).ready(function() {
+    $("select#con_id").change(function () {		
+		$('#sta_id').children().remove().end().append("<option value=\"\">...Loading...</option>");
+		var con_id = $("#con_id").val();		
+		$.get("populatestate.php?con_id="+con_id,
+		function(xml){
+			$('#sta_id').children().remove().end().append("<option value=\"\">Please Select</option>");
+			$("states",xml).each(function(id) {
+			states = $("states",xml).get(id);	
+				x='';
+				if($("sta_id",states).text()==x)
+					c='selected';
+				else
+					c='';
+				result = '<option value="'+$("sta_id",states).text()+'" ' + c + '>'+$("name",states).text()+'</option>'
+//				states = $("states",xml).get(id);				
+	//			result = '<option value="'+$("sta_id",states).text()+'">'+$("name",states).text()+'</option>'
+				$("#sta_id").append(result);
+			});
+		});
+	});	
+	$("#city").autocomplete("populatecity.php",
+		{
+			delay:10,
+			minChars:2,
+			matchSubset:1,
+			matchContains:1,
+			onItemSelect:selectCity,
+			onFindValue:findCity,
+			formatItem:formatItem,
+			extraParams:{con_id:function() { return $("#con_id").val(); },sta_id:function() { return $("#sta_id").val(); }}
+		}
+	);
+	
+	
+	    $("select#shc_id").change(function () {		
+		$('#siz_id').children().remove().end().append("<option value=\"\">...Loading...</option>");
+		$('#shw_id').children().remove().end().append("<option value=\"\">...Loading...</option>");
+		var shc_id = $("#shc_id").val();		
+		$.get("populatesize.php?shc_id="+shc_id,
+		function(xml){
+			$('#siz_id').children().remove().end().append("<option value=\"\">Please Select</option>");
+			$("size",xml).each(function(id) {
+				size = $("size",xml).get(id);				
+				result = '<option value="'+$("siz_id",size).text()+'">'+$("name",size).text()+'</option>'
+				$("#siz_id").append(result);
+			});
+		});
+		
+		
+		$.get("populatewidth.php?shc_id="+shc_id,
+		function(xml){
+			$('#shw_id').children().remove().end().append("<option value=\"\">Please Select</option>");
+			$("width",xml).each(function(id) {
+				width = $("width",xml).get(id);				
+				result = '<option value="'+$("shw_id",width).text()+'">'+$("name",width).text()+'</option>'
+				$("#shw_id").append(result);
+			});
+		});
+		
+	});	
+
+
+	});
+</script>
+
+ <script type="text/javascript">
+    var RecaptchaOptions = { theme : 'white' };
+ </script>
+
+
+
+<SCRIPT TYPE="text/javascript">
+<!--
+//Disable right click script
+//visit http://www.rainbow.arch.scriptmania.com/scripts/
+var message="Sorry, right-click has been disabled";
+///////////////////////////////////
+function clickIE() {if (document.all) {(message);return false;}}
+function clickNS(e) {if
+(document.layers||(document.getElementById&&!document.all)) {
+if (e.which==2||e.which==3) {(message);return false;}}}
+if (document.layers)
+{document.captureEvents(Event.MOUSEDOWN);document.onmousedown=clickNS;}
+else{document.onmouseup=clickNS;document.oncontextmenu=clickIE;}
+document.oncontextmenu=new Function("return false")
+// -->
+</SCRIPT> 
+
+</head>
+<body>
+<div class="mainbody">
+  <div class="content">
+    <div class="header">
+      <div class="logo"><img src="images/logo.jpg" alt=" "   border="0"/> </div>
+      <div class="menu">
+        <div class="search"> <a href="advancesearch.php" title="Advance Search"><img src="images/advance_search.gif" width="140px" height="25px" alt="" /></a> <br class="clear" />
+
+                 <a href="memberlogin.php">Member Log in</a>&nbsp; </div>
+           
+         
+        <div class="menu_bar">
+          <div class="menu_lr"><img src="images/menu_left.gif" width="15px" height="37px" alt="" /></div>
+          <div class="menu_list"><a href="index.php">Home</a></div>
+          <div class="menu_divider">&nbsp;</div>
+          <div class="menu_list"><a href="searchresults.php?ja=1">Just Added</a></div>
+          <div class="menu_divider">&nbsp;</div>
+
+           <div class="menu_list"><a href="searchresults.php?ja=2">Most Popular</a></div>
+          <div class="menu_divider">&nbsp;</div>
+          <div class="menu_list" ><a href="#" class='example8'>Newsletter</a></div>
+                     <div class="menu_divider">&nbsp;</div>
+          <div class="menu_list"><a href="footwearsuggestions.php">Footwear Suggestions</a></div>
+                    <div class="menu_divider">&nbsp;</div>
+          <div class="menu_list">
+
+                  <a href="advlogin.php">Advertiser</a>
+                
+        </div>
+        
+          
+          <div class="menu_lr"><img src="images/menu_right.gif" width="15px" height="37px" alt="" /></div>
+        </div>
+      </div>
+    </div>
+         <div id="headerimg1">
+     	 	
+		
+   
+      <div id="leftheaderbanner"> &nbsp;
+
+        <!-- This contains the hidden content for inline calls -->
+        <div style='display:none'>
+          <div id='inline_example1' style='padding:10px; background:#fff;'>
+            <h3>Newsletter</h3>
+            <form action="newsletter.php" method="post" name="newsfrm" id="newsfrm"><div id="loginform">
+              <div class="log1">
+                <p> Email<br />
+
+                  <input type="text" style=" width:180px; " name="Email" id="Email"/>
+                </p>
+                <p> Zip code<br />
+                  <input type="text"  style=" width:180px; " name="ZipCode" id="ZipCode" />
+                </p>
+              </div>
+              <div class="log1">
+                <p>Gender<br />
+
+                  <select name="gender" style="width:180px;">
+                    
+                    <option value="Male" selected="selected">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </p>
+                <p>
+                <div id="popupsubmit">
+                  <div class="submitbtn">
+
+                    <p class="advsubmit"><a id="mybutton">Submit</a></p>
+                  </div>
+                  <div class="submitbtn">
+                    <p class="advsubmit"><a onclick="javascript: document.newsfrm.reset();">Clear</a></p>
+                  </div>
+                </div>
+                <p> 
+              </div>
+
+              <br />
+              <br />
+            </div></form>
+            <div id="newsreply"></div>
+          </div>
+        </div>
+      </div>
+      
+      
+      
+     
+        
+      
+          </div>
+    <div class="space_top">&nbsp;</div>     <script language="javascript" src="picker.js"></script>
+
+<link href="picker.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript">
+ 
+  $(document).ready(function() {
+    $('#flash3').live('click',function() {
+      alert('triggered a click');
+    });
+  });
+</script>
+
+<style type="text/css">
+  #flash3 {
+    position:relative;
+    z-index: 1;
+  }
+</style>
+
+      <div class="container">
+      <div class="left_menu">
+						<script src="js/AC_RunActiveContent.js" type="text/javascript"></script>
+						     <script type="text/javascript">
+AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0','width','50','height','37','src','button1','quality','high','pluginspage','http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash','movie','button1' ); //end AC code
+</script><noscript><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0" width="50" height="37">
+        <param name="movie" value="button1.swf" />
+        <param name="quality" value="high" />
+        <embed src="button1.swf" quality="high" pluginspage="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash" type="application/x-shockwave-flash" width="50" height="37" ></embed>
+      </object>
+      </noscript>
+                                                <div class="left_box">
+							<div class="box_top">
+								<div class="box_top_l">Men</div>
+
+								<div class="box_top_r"><img src="images/men_women.gif" width="50" height="40" alt="" title="" /></div>
+							</div>							
+							<div class="box_mid">
+								<ul>
+                                 									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=10">Dress Slip On</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=9">Dress Shoes</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=8">Dress Boots</a></li>
+
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=7">Clogs/Mules</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=6">Casual</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=5">Boat Shoes</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=11">Loafers</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=12">Sandels</a></li>
+
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=13">Sneakers</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=14">Sports</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=15">Work & Duty</a></li>
+                                								</ul>
+								
+								<br class="clear"/>
+
+							</div>
+						</div>
+						<div class="divider_v">&nbsp;</div>
+                                              <div class="left_box">
+							<div class="box_top">
+								<div class="box_top_l">Women</div>
+								<div class="box_top_r"><img src="images/men_women.gif" width="50" height="40" alt="" title="" /></div>
+							</div>							
+							<div class="box_mid">
+
+								<ul>
+                                 									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=16">Casual Boots</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=17">Clogs/Mules</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=18">Dress Boots</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=19">Dress Flats</a></li>
+
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=20">Dress Shoes</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=21">Loafers</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=22">Mary-Janes</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=23">Platforms</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=24">Sandels</a></li>
+
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=25">Sneakers</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=26">Sports</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=27">Work & Duty</a></li>
+                                								</ul>
+								
+								<br class="clear"/>
+
+							</div>
+						</div>
+						<div class="divider_v">&nbsp;</div>
+                                              <div class="left_box">
+							<div class="box_top">
+								<div class="box_top_l">Boys</div>
+								<div class="box_top_r"><img src="images/men_women.gif" width="50" height="40" alt="" title="" /></div>
+							</div>							
+							<div class="box_mid">
+
+								<ul>
+                                 									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=28">Athletic</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=29">Boots</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=30">Casual</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=31">Clogs/Mules</a></li>
+
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=32">Dress</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=33">Fashion</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=34">Lights</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=35">Outdoor</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=36">Playground</a></li>
+
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=37">Pre-Walker</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=38">Sandals</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=39">Skate Shoes</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=40">Slippers</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=41">Sports</a></li>
+
+                                								</ul>
+								
+								<br class="clear"/>
+							</div>
+						</div>
+						<div class="divider_v">&nbsp;</div>
+                                              <div class="left_box">
+							<div class="box_top">
+								<div class="box_top_l">Girls</div>
+
+								<div class="box_top_r"><img src="images/men_women.gif" width="50" height="40" alt="" title="" /></div>
+							</div>							
+							<div class="box_mid">
+								<ul>
+                                 									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=42">Athletic</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=43">Boots</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=44">Casual</a></li>
+
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=45">Clogs/Mules</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=46">Dress</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=47">Fashion</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=48">Lights</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=49">Outdoor</a></li>
+
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=50">Playground</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=51">Pre-Walker</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=52">Sandals</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=53">Skate Shoes</a></li>
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=54">Slippers</a></li>
+
+                                									<li><img src="images/arrow.gif" width="15" height="20" alt="" title="" />&nbsp; <a href="searchresults.php?catid=55">Sports</a></li>
+                                								</ul>
+								
+								<br class="clear"/>
+							</div>
+						</div>
+						<div class="divider_v">&nbsp;</div>
+                      						<div class="divider_v">&nbsp;</div>
+						
+					</div>      <div class="mid_body">
+
+        <div class="heading">
+          <h1><img src="images/icon_Featuerprojects.gif" width="66" height="41">Advance Search</h1>
+        </div>
+        <form action="searchresults.php" method="post" name="advsrchfrm">
+        <div id="advancedsearchpage">
+          <div id="advsearchleftpage">
+            <div class="advleftcol1page">
+              <div>
+
+                <p>Product  : </p>
+                <p>Footwear :</p>
+                <p>Shoe Type: </p>
+                <p>Shoe Lac :</p>
+                <p>Color :</p>
+                <p>Shoe Size : </p>
+
+                <p>Heel Height :</p>
+                <p>Price :</p>
+                <p>Country :</p>
+                <p>State :</p>
+                <p>City :</p>
+                 <p>Zip Code :</p>
+
+              </div>
+            </div>
+           <div class="advleftcol1page">
+              <div>
+                <p>
+                  <input type="text" name="shoe_name" style="width:120px;" id="shoe_name" value="">
+                </p>
+                <p>
+                  <select id="fot_id" name="fot_id" style="width:120px;">
+
+                    <option selected="selected" value="">Select....</option>
+                                        <option value="1" >BaseBall</option>
+                                        <option value="2" >Basketball</option>
+                                        <option value="3" >Boots</option>
+                                        <option value="4" >Clogs</option>
+                                        <option value="5" >Dance</option>
+
+                                        <option value="6" >Flats</option>
+                                        <option value="7" >Football</option>
+                                        <option value="8" >Golf</option>
+                                        <option value="9" >Hiking</option>
+                                        <option value="10" >Keds</option>
+                                        <option value="11" >Loafers</option>
+
+                                        <option value="12" >Mules</option>
+                                        <option value="13" >Oxford</option>
+                                        <option value="14" >Running</option>
+                                        <option value="15" >Sandels</option>
+                                        <option value="16" >Skate Boarding</option>
+                                        <option value="17" >Slip-on</option>
+
+                                        <option value="18" >Slippers</option>
+                                        <option value="19" >Sneakers</option>
+                                        <option value="20" >Sneakers/Skates</option>
+                                        <option value="21" >Soccer</option>
+                                        <option value="22" >Stilettos</option>
+                                        <option value="23" >Tennis</option>
+
+                                        <option value="24" >Walking</option>
+                                        <option value="25" >Work Boots</option>
+                                        <option value="26" >Work Shoes</option>
+                                      </select>
+                </p>
+                <p>
+                  <select id="sht_id" name="sht_id" style="width:120px;">
+
+                    <option selected="selected" value="">Select....</option>
+                                        <option value="1"  >Ankle Booties</option>
+                                        <option value="2"  >Ankle Strap</option>
+                                        <option value="3"  >Ballet Flats</option>
+                                        <option value="4"  >Bicycle toe</option>
+                                        <option value="5"  >Cage-Style Vamp</option>
+
+                                        <option value="6"  >Cap toe </option>
+                                        <option value="7"  >Composite Toe</option>
+                                        <option value="8"  >Cut Out's</option>
+                                        <option value="9"  >D'orsay</option>
+                                        <option value="10"  >Double stretch strap</option>
+                                        <option value="11"  >Dual Hook & Loop </option>
+
+                                        <option value="12"  >Dual Straps</option>
+                                        <option value="13"  >Espadrilles</option>
+                                        <option value="14"  >Faux Buckle</option>
+                                        <option value="15"  >Fold-Over Flap</option>
+                                        <option value="16"  >Galdiators</option>
+                                        <option value="17"  >High Tops</option>
+
+                                        <option value="18"  >Hook & Loop</option>
+                                        <option value="19"  >Knee-High Boots</option>
+                                        <option value="20"  >Knotted Vamp </option>
+                                        <option value="21"  >Lace-Ups</option>
+                                        <option value="22"  >Loop vamp strap</option>
+                                        <option value="23"  >Low Tops</option>
+
+                                        <option value="24"  >Mary Jane</option>
+                                        <option value="25"  >Open Snub Toe</option>
+                                        <option value="26"  >Open Toe</option>
+                                        <option value="27"  >Overlapping Straps</option>
+                                        <option value="28"  >Platforms</option>
+                                        <option value="29"  >Pointy Toe</option>
+
+                                        <option value="30"  >Pull-on</option>
+                                        <option value="31"  >Pumps</option>
+                                        <option value="32"  >Quarter Strap</option>
+                                        <option value="33"  >Removable Ankle Strap</option>
+                                        <option value="34"  >Roomy toe box</option>
+                                        <option value="35"  >Safety Toe</option>
+
+                                        <option value="36"  >Slip-On</option>
+                                        <option value="37"  >Split Seam Toe</option>
+                                        <option value="38"  >Square Thong </option>
+                                        <option value="39"  >Square Toe Box</option>
+                                        <option value="40"  >T-Strap</option>
+                                        <option value="41"  >Tapered Toe</option>
+
+                                        <option value="43"  >Thigh High Boots</option>
+                                        <option value="42"  >Thong Style</option>
+                                        <option value="44"  >Toe Ring</option>
+                                        <option value="45"  >Top Fold</option>
+                                        <option value="46"  >Trim</option>
+                                        <option value="47"  >Wrap Around Strap</option>
+
+                                        <option value="48"  >Z-Strap</option>
+                                      </select>
+                </p>
+                <p> Yes
+                  <input name="shoe_lace" value="1" type="radio"   />
+No
+<input name="shoe_lace" value="0" type="radio"  checked="checked"   />
+</p>
+               <p><span class="input">
+                  <input name="color1" type="text" id="color1" size="7" maxlength="7" value="" style="width:80px;" />
+
+                <img src="color.png" align="absmiddle" style="cursor:pointer;" onclick="openPicker('color1')" /> 
+               </span></p>
+               <p><span class="input">
+                 <select name="siz_id" id="siz_id" style="width:120px;">
+                   <option selected="selected" value="">Select....</option>
+                                      <option value="2"  >5</option>
+                                      <option value="3"  >6</option>
+                                      <option value="4"  >6&Acirc;&frac12;</option>
+
+                                      <option value="5"  >7</option>
+                                      <option value="6"  >7&Acirc;&frac12;</option>
+                                      <option value="9"  >9</option>
+                                    </select>
+               </span></p>
+                <p><span class="input">
+                  <select id="hlh_id" name="hlh_id" style="width:120px;">
+
+                    <option selected="selected" value="">Select....</option>
+                                        <option value="7"  >"1 1/2"""</option>
+                                        <option value="6"  >"1 1/4"""</option>
+                                        <option value="8"  >"1 3/4"""</option>
+                                        <option value="5"  >"1"""</option>
+                                        <option value="2"  >"1/2"""</option>
+
+                                        <option value="3"  >"1/4"""</option>
+                                        <option value="11"  >"2 1/2"""</option>
+                                        <option value="10"  >"2 1/4"""</option>
+                                        <option value="12"  >"2 3/4"""</option>
+                                        <option value="9"  >"2"""</option>
+                                        <option value="15"  >"3 1/2"""</option>
+
+                                        <option value="14"  >"3 1/4"""</option>
+                                        <option value="16"  >"3 3/4"""</option>
+                                        <option value="13"  >"3"""</option>
+                                        <option value="4"  >"3/4"""</option>
+                                        <option value="19"  >"4 1/2"""</option>
+                                        <option value="18"  >"4 1/4"""</option>
+
+                                        <option value="20"  >"4 3/4"""</option>
+                                        <option value="17"  >"4"""</option>
+                                        <option value="23"  >"5 1/2"""</option>
+                                        <option value="22"  >"5 1/4"""</option>
+                                        <option value="24"  >"5 3/4"""</option>
+                                        <option value="21"  >"5"""</option>
+
+                                        <option value="27"  >"6 1/2"""</option>
+                                        <option value="26"  >"6 1/4"""</option>
+                                        <option value="28"  >"6 3/4"""</option>
+                                        <option value="25"  >"6"""</option>
+                                        <option value="29"  >"7"""</option>
+                                        <option value="1"  >Flats</option>
+
+                                      </select>
+                </span></p>
+                <p>
+                  <input type="text" name="price" style="width:120px;" id="price" />
+                </p>
+                <p>
+                  <select id="con_id" name="con_id" style="width:120px">
+                    <option selected="selected" value="">Select....</option>
+
+                                        <option value="157"  >Afghanistan</option>
+                                        <option value="176"  >Albania</option>
+                                        <option value="134"  >Algeria</option>
+                                        <option value="34"  >American Samoa</option>
+                                        <option value="185"  >Andorra</option>
+                                        <option value="32"  >Angola</option>
+
+                                        <option value="1"  >Antarctica</option>
+                                        <option value="124"  >Antigua and Barbuda</option>
+                                        <option value="2"  >Argentina</option>
+                                        <option value="175"  >Armenia</option>
+                                        <option value="226"  >Australia</option>
+                                        <option value="197"  >Austria</option>
+
+                                        <option value="174"  >Azerbaijan</option>
+                                        <option value="137"  >Bahamas</option>
+                                        <option value="148"  >Bahrain</option>
+                                        <option value="136"  >Bangladesh</option>
+                                        <option value="106"  >Barbados</option>
+                                        <option value="210"  >Belarus</option>
+
+                                        <option value="207"  >Belgium</option>
+                                        <option value="121"  >Belize</option>
+                                        <option value="83"  >Benin</option>
+                                        <option value="160"  >Bermuda</option>
+                                        <option value="150"  >Bhutan</option>
+                                        <option value="21"  >Bolivia</option>
+
+                                        <option value="187"  >Bosnia and Herzegovina</option>
+                                        <option value="17"  >Botswana</option>
+                                        <option value="10"  >Brazil</option>
+                                        <option value="132"  >British Virgin Islands</option>
+                                        <option value="74"  >Brunei</option>
+                                        <option value="183"  >Bulgaria</option>
+
+                                        <option value="91"  >Burkina Faso</option>
+                                        <option value="52"  >Burundi</option>
+                                        <option value="93"  >Cambodia</option>
+                                        <option value="63"  >Cameroon</option>
+                                        <option value="224"  >Canada</option>
+                                        <option value="116"  >Cape Verde</option>
+
+                                        <option value="133"  >Cayman Islands</option>
+                                        <option value="67"  >Central African Republic</option>
+                                        <option value="87"  >Chad</option>
+                                        <option value="4"  >Chile</option>
+                                        <option value="131"  >China</option>
+                                        <option value="51"  >Colombia</option>
+
+                                        <option value="38"  >Comoros</option>
+                                        <option value="48"  >Congo</option>
+                                        <option value="40"  >Congo (Dem. Rep.)</option>
+                                        <option value="24"  >Cook Islands</option>
+                                        <option value="89"  >Costa Rica</option>
+                                        <option value="186"  >Croatia</option>
+
+                                        <option value="135"  >Cuba</option>
+                                        <option value="165"  >Cyprus</option>
+                                        <option value="202"  >Czech Republic</option>
+                                        <option value="213"  >Denmark</option>
+                                        <option value="96"  >Djibouti</option>
+                                        <option value="119"  >Dominica</option>
+
+                                        <option value="128"  >Dominican Republic</option>
+                                        <option value="47"  >East Timor</option>
+                                        <option value="50"  >Ecuador</option>
+                                        <option value="141"  >Egypt</option>
+                                        <option value="109"  >El Salvador</option>
+                                        <option value="56"  >Equatorial Guinea</option>
+
+                                        <option value="105"  >Eritrea</option>
+                                        <option value="216"  >Estonia</option>
+                                        <option value="68"  >Ethiopia</option>
+                                        <option value="39"  >External Territories of Australia</option>
+                                        <option value="3"  >Falkland Islands</option>
+                                        <option value="220"  >Faroe Islands</option>
+
+                                        <option value="29"  >Fiji Islands</option>
+                                        <option value="218"  >Finland</option>
+                                        <option value="182"  >France</option>
+                                        <option value="65"  >French Guiana</option>
+                                        <option value="13"  >French Polynesia</option>
+                                        <option value="5"  >French Southern Territories</option>
+
+                                        <option value="53"  >Gabon</option>
+                                        <option value="108"  >Gambia</option>
+                                        <option value="180"  >Georgia</option>
+                                        <option value="200"  >Germany</option>
+                                        <option value="77"  >Ghana</option>
+                                        <option value="166"  >Greece</option>
+
+                                        <option value="219"  >Greenland</option>
+                                        <option value="99"  >Grenada</option>
+                                        <option value="120"  >Guadeloupe</option>
+                                        <option value="110"  >Guam</option>
+                                        <option value="112"  >Guatemala</option>
+                                        <option value="205"  >Guernsey and Alderney</option>
+
+                                        <option value="86"  >Guinea</option>
+                                        <option value="97"  >Guinea-Bissau</option>
+                                        <option value="66"  >Guyana</option>
+                                        <option value="130"  >Haiti</option>
+                                        <option value="107"  >Honduras</option>
+                                        <option value="195"  >Hungary</option>
+
+                                        <option value="221"  >Iceland</option>
+                                        <option value="88"  >India</option>
+                                        <option value="44"  >Indonesia</option>
+                                        <option value="147"  >Iran</option>
+                                        <option value="156"  >Iraq</option>
+                                        <option value="209"  >Ireland</option>
+
+                                        <option value="212"  >Isle of Man</option>
+                                        <option value="155"  >Israel</option>
+                                        <option value="169"  >Italy</option>
+                                        <option value="73"  >Ivory Coast</option>
+                                        <option value="127"  >Jamaica</option>
+                                        <option value="145"  >Japan</option>
+
+                                        <option value="203"  >Jersey</option>
+                                        <option value="154"  >Jordan</option>
+                                        <option value="178"  >Kazakhstan</option>
+                                        <option value="49"  >Kenya</option>
+                                        <option value="54"  >Kiribati</option>
+                                        <option value="173"  >Korea (North)</option>
+
+                                        <option value="164"  >Korea (South)</option>
+                                        <option value="153"  >Kuwait</option>
+                                        <option value="177"  >Kyrgyzstan</option>
+                                        <option value="117"  >Laos</option>
+                                        <option value="215"  >Latvia</option>
+                                        <option value="163"  >Lebanon</option>
+
+                                        <option value="11"  >Lesotho</option>
+                                        <option value="72"  >Liberia</option>
+                                        <option value="143"  >Libya</option>
+                                        <option value="199"  >Liechtenstein</option>
+                                        <option value="211"  >Lithuania</option>
+                                        <option value="206"  >Luxembourg</option>
+
+                                        <option value="179"  >Macedonia</option>
+                                        <option value="19"  >Madagascar</option>
+                                        <option value="33"  >Malawi</option>
+                                        <option value="62"  >Malaysia</option>
+                                        <option value="59"  >Maldives</option>
+                                        <option value="95"  >Mali</option>
+
+                                        <option value="167"  >Malta</option>
+                                        <option value="75"  >Marshall Islands</option>
+                                        <option value="114"  >Martinique</option>
+                                        <option value="118"  >Mauritania</option>
+                                        <option value="27"  >Mauritius</option>
+                                        <option value="37"  >Mayotte</option>
+
+                                        <option value="115"  >Mexico</option>
+                                        <option value="69"  >Micronesia</option>
+                                        <option value="194"  >Moldova</option>
+                                        <option value="190"  >Monaco</option>
+                                        <option value="188"  >Mongolia</option>
+                                        <option value="152"  >Morocco</option>
+
+                                        <option value="18"  >Mozambique</option>
+                                        <option value="101"  >Myanmar</option>
+                                        <option value="12"  >Namibia</option>
+                                        <option value="60"  >Nauru</option>
+                                        <option value="149"  >Nepal</option>
+                                        <option value="208"  >Netherlands</option>
+
+                                        <option value="100"  >Netherlands Antilles</option>
+                                        <option value="22"  >New Caledonia</option>
+                                        <option value="6"  >New Zealand</option>
+                                        <option value="94"  >Nicaragua</option>
+                                        <option value="98"  >Niger</option>
+                                        <option value="71"  >Nigeria</option>
+
+                                        <option value="113"  >Northern Mariana Islands</option>
+                                        <option value="217"  >Norway</option>
+                                        <option value="123"  >Oman</option>
+                                        <option value="142"  >Pakistan</option>
+                                        <option value="64"  >Palau</option>
+                                        <option value="158"  >Palestine</option>
+
+                                        <option value="85"  >Panama</option>
+                                        <option value="43"  >Papua New Guinea</option>
+                                        <option value="14"  >Paraguay</option>
+                                        <option value="30"  >Peru</option>
+                                        <option value="76"  >Philippines</option>
+                                        <option value="204"  >Poland</option>
+
+                                        <option value="162"  >Portugal</option>
+                                        <option value="129"  >Puerto Rico</option>
+                                        <option value="146"  >Qatar</option>
+                                        <option value="25"  >Reunion</option>
+                                        <option value="189"  >Romania</option>
+                                        <option value="181"  >Russia</option>
+
+                                        <option value="55"  >Rwanda</option>
+                                        <option value="7"  >Saint Helena</option>
+                                        <option value="125"  >Saint Kitts and Nevis</option>
+                                        <option value="111"  >Saint Lucia</option>
+                                        <option value="198"  >Saint Pierre and Miquelon</option>
+                                        <option value="104"  >Saint Vincent and The Grenadines</option>
+
+                                        <option value="36"  >Samoa</option>
+                                        <option value="191"  >San Marino</option>
+                                        <option value="122"  >Saudi Arabia</option>
+                                        <option value="61"  >SÃ£o TomÃ© and PrÃ­ncipe</option>
+                                        <option value="102"  >Senegal</option>
+                                        <option value="184"  >Serbia and Montenegro</option>
+
+                                        <option value="84"  >Sierra Leone</option>
+                                        <option value="201"  >Slovakia</option>
+                                        <option value="193"  >Slovenia</option>
+                                        <option value="16"  >Smaller Territories of Chile</option>
+                                        <option value="20"  >Smaller Territories of the UK</option>
+                                        <option value="41"  >Solomon Islands</option>
+
+                                        <option value="58"  >Somalia</option>
+                                        <option value="9"  >South Africa</option>
+                                        <option value="151"  >Spain</option>
+                                        <option value="81"  >Sri Lanka</option>
+                                        <option value="70"  >Sudan</option>
+                                        <option value="78"  >Suriname</option>
+
+                                        <option value="222"  >Svalbard and Jan Mayen</option>
+                                        <option value="15"  >Swaziland</option>
+                                        <option value="214"  >Sweden</option>
+                                        <option value="196"  >Switzerland</option>
+                                        <option value="161"  >Syria</option>
+                                        <option value="139"  >Taiwan</option>
+
+                                        <option value="171"  >Tajikistan</option>
+                                        <option value="42"  >Tanzania</option>
+                                        <option value="80"  >Thailand</option>
+                                        <option value="82"  >Togo</option>
+                                        <option value="45"  >Tokelau</option>
+                                        <option value="26"  >Tonga</option>
+
+                                        <option value="92"  >Trinidad and Tobago</option>
+                                        <option value="159"  >Tunisia</option>
+                                        <option value="168"  >Turkey</option>
+                                        <option value="172"  >Turkmenistan</option>
+                                        <option value="138"  >Turks and Caicos Islands</option>
+                                        <option value="46"  >Tuvalu</option>
+
+                                        <option value="57"  >Uganda</option>
+                                        <option value="192"  >Ukraine</option>
+                                        <option value="144"  >United Arab Emirates</option>
+                                        <option value="225"  >United Kingdom</option>
+                                        <option value="223"  >United States</option>
+                                        <option value="8"  >Uruguay</option>
+
+                                        <option value="170"  >Uzbekistan</option>
+                                        <option value="28"  >Vanuatu</option>
+                                        <option value="79"  >Venezuela</option>
+                                        <option value="90"  >Vietnam</option>
+                                        <option value="126"  >Virgin Islands of the United States</option>
+                                        <option value="35"  >Wallis and Futuna</option>
+
+                                        <option value="140"  >Western Sahara</option>
+                                        <option value="103"  >Yemen</option>
+                                        <option value="31"  >Zambia</option>
+                                        <option value="23"  >Zimbabwe</option>
+                                      </select>
+                </p>
+                <p>
+
+                  <select id="sta_id" name="sta_id" style="width:120px;">
+                    <option value="">Select....</option>
+                  </select>
+                </p>
+                <p>
+                  <input autocomplete="off" name="city" class="input_box ac_input" id="city" type="text" style="width:120px;" />
+                </p>
+                  <p>
+
+                  <input type="text" name="zip_code" style="width:120px;" id="zip_code" />
+                </p>
+              </div>
+            </div>
+          </div>
+          <div id="advsearchrightpage">
+            <div class="advleftcol1page">
+              <div>
+                <p>Shoe Category :
+              </p>
+
+                <p>Brand :</p>
+                <p>Type of Sole : </p>
+                <p>Material :</p>
+                <p style="height:85px;">&nbsp;</p>
+                <p>Closure :</p>
+                <p>Shoe Width :</p>
+
+                <p>Type of Heel : </p>
+                <p>Season :</p>
+                <p>Store Name :</p>
+               
+                <div id="advsearchbuttonpage"><p id="advsubmit"><a href="#" onClick="javascript: document.advsrchfrm.submit();">Submit</a></p>
+          </div>
+              </div>
+            </div>
+
+            <div class="advleftcol1page">
+              <div>
+                 <p>
+                   <select id="shc_id" name="shc_id" style="width:120px;">
+                     <option selected="selected" value="">Select....</option>
+                                          <optgroup label="Boys">
+                                          <option value="28"  >Athletic</option>
+                                          <option value="29"  >Boots</option>
+
+                                          <option value="30"  >Casual</option>
+                                          <option value="31"  >Clogs/Mules</option>
+                                          <option value="32"  >Dress</option>
+                                          <option value="33"  >Fashion</option>
+                                          <option value="34"  >Lights</option>
+                                          <option value="35"  >Outdoor</option>
+
+                                          <option value="36"  >Playground</option>
+                                          <option value="37"  >Pre-Walker</option>
+                                          <option value="38"  >Sandals</option>
+                                          <option value="39"  >Skate Shoes</option>
+                                          <option value="40"  >Slippers</option>
+                                          <option value="41"  >Sports</option>
+
+                                          </optgroup>
+                                          <optgroup label="Girls">
+                                          <option value="42"  >Athletic</option>
+                                          <option value="43"  >Boots</option>
+                                          <option value="44"  >Casual</option>
+                                          <option value="45"  >Clogs/Mules</option>
+                                          <option value="46"  >Dress</option>
+
+                                          <option value="47"  >Fashion</option>
+                                          <option value="48"  >Lights</option>
+                                          <option value="49"  >Outdoor</option>
+                                          <option value="50"  >Playground</option>
+                                          <option value="51"  >Pre-Walker</option>
+                                          <option value="52"  >Sandals</option>
+
+                                          <option value="53"  >Skate Shoes</option>
+                                          <option value="54"  >Slippers</option>
+                                          <option value="55"  >Sports</option>
+                                          </optgroup>
+                                          <optgroup label="Men">
+                                          <option value="10"  >Dress Slip On</option>
+                                          <option value="9"  >Dress Shoes</option>
+
+                                          <option value="8"  >Dress Boots</option>
+                                          <option value="7"  >Clogs/Mules</option>
+                                          <option value="6"  >Casual</option>
+                                          <option value="5"  >Boat Shoes</option>
+                                          <option value="11"  >Loafers</option>
+                                          <option value="12"  >Sandels</option>
+
+                                          <option value="13"  >Sneakers</option>
+                                          <option value="14"  >Sports</option>
+                                          <option value="15"  >Work & Duty</option>
+                                          </optgroup>
+                                          <optgroup label="Women">
+                                          <option value="16"  >Casual Boots</option>
+
+                                          <option value="17"  >Clogs/Mules</option>
+                                          <option value="18"  >Dress Boots</option>
+                                          <option value="19"  >Dress Flats</option>
+                                          <option value="20"  >Dress Shoes</option>
+                                          <option value="21"  >Loafers</option>
+                                          <option value="22"  >Mary-Janes</option>
+
+                                          <option value="23"  >Platforms</option>
+                                          <option value="24"  >Sandels</option>
+                                          <option value="25"  >Sneakers</option>
+                                          <option value="26"  >Sports</option>
+                                          <option value="27"  >Work & Duty</option>
+                                          </optgroup>
+
+                                        </select>
+                 </p>
+                <p>
+                  <select id="brn_id" name="brn_id" style="width:120px;">
+                    <option selected="selected" value="">Select....</option>
+                                        <option value="2"  >A Line Kids</option>
+                                        <option value="3"  >A. Marinelli</option>
+
+                                        <option value="5"  >A. Testoni</option>
+                                        <option value="1"  >A.B.S.</option>
+                                        <option value="4"  >A.N.A</option>
+                                        <option value="6"  >Acorn</option>
+                                        <option value="7"  >Acorn Kids</option>
+                                        <option value="8"  >Adagio</option>
+
+                                        <option value="9"  >adidas</option>
+                                        <option value="10"  >adidas Kids</option>
+                                        <option value="11"  >adidas Originals</option>
+                                        <option value="12"  >Adio</option>
+                                        <option value="13"  >Adio Kids</option>
+                                        <option value="14"  >Aerosoles</option>
+
+                                        <option value="15"  >Aetrex</option>
+                                        <option value="16"  >Against The Elements</option>
+                                        <option value="17"  >Agatha Ruiz De La Prada Kids</option>
+                                        <option value="18"  >AGV Sport</option>
+                                        <option value="19"  >Ahnu</option>
+                                        <option value="20"  >Airwalk</option>
+
+                                        <option value="21"  >AK Anne Klein</option>
+                                        <option value="22"  >Akadema</option>
+                                        <option value="23"  >Akademiks</option>
+                                        <option value="24"  >AKU</option>
+                                        <option value="25"  >Albano</option>
+                                        <option value="26"  >Alberto Gozzi</option>
+
+                                        <option value="27"  >Alessandro Dell'Acqua</option>
+                                        <option value="28"  >Alexander Hotto</option>
+                                        <option value="29"  >Alexander McQueen</option>
+                                        <option value="30"  >Alexandra Neel</option>
+                                        <option value="31"  >Alfani</option>
+                                        <option value="32"  >Alias Footwear</option>
+
+                                        <option value="33"  >Alico</option>
+                                        <option value="34"  >Allen-Edmonds</option>
+                                        <option value="35"  >Allrounder by Mephisto</option>
+                                        <option value="36"  >Allrounder by Mephisto Kids</option>
+                                        <option value="37"  >Almarino Kids</option>
+                                        <option value="38"  >Alphabet City NY</option>
+
+                                        <option value="39"  >Alpina</option>
+                                        <option value="40"  >Alpinestars</option>
+                                        <option value="41"  >Altama Footwear</option>
+                                        <option value="42"  >Altimate</option>
+                                        <option value="43"  >Amalfi</option>
+                                        <option value="44"  >Amaltea</option>
+
+                                        <option value="45"  >Amanda</option>
+                                        <option value="46"  >American Eagle</option>
+                                        <option value="47"  >Amiana Kids</option>
+                                        <option value="48"  >AND 1</option>
+                                        <option value="49"  >AND 1 Kids</option>
+                                        <option value="50"  >Anderson Bean Boot Company</option>
+
+                                        <option value="51"  >Andiamo</option>
+                                        <option value="52"  >Andre Assous</option>
+                                        <option value="54"  >Angeleigh Anastasio</option>
+                                        <option value="53"  >Angeli Inquieti</option>
+                                        <option value="56"  >Anne Klein New York</option>
+                                        <option value="57"  >Annie</option>
+
+                                        <option value="55"  >Ann Marino</option>
+                                        <option value="58"  >ANTIK DENIM</option>
+                                        <option value="59"  >Anywear Shoe</option>
+                                        <option value="60"  >Apepazza</option>
+                                        <option value="61"  >Apex</option>
+                                        <option value="62"  >Apis Footwear Company</option>
+
+                                        <option value="63"  >Apostrophe</option>
+                                        <option value="64"  >Aquatalia by Marvin K.</option>
+                                        <option value="65"  >Aquaz</option>
+                                        <option value="66"  >ara</option>
+                                        <option value="67"  >Aramark</option>
+                                        <option value="68"  >Aravon</option>
+
+                                        <option value="69"  >Arche</option>
+                                        <option value="70"  >Arcopedico</option>
+                                        <option value="71"  >Ariat</option>
+                                        <option value="72"  >Arizona</option>
+                                        <option value="73"  >Armani</option>
+                                        <option value="74"  >Arnold Palmer</option>
+
+                                        <option value="76"  >Asgi</option>
+                                        <option value="77"  >Ashley Dearborn</option>
+                                        <option value="78"  >ASICS</option>
+                                        <option value="79"  >ASICS Kids</option>
+                                        <option value="80"  >Asolo</option>
+                                        <option value="81"  >Aster</option>
+
+                                        <option value="82"  >Athena Alexander</option>
+                                        <option value="83"  >Atlas</option>
+                                        <option value="84"  >Auditions</option>
+                                        <option value="85"  >Aussie Dogs</option>
+                                        <option value="86"  >Avenue</option>
+                                        <option value="87"  >Avia</option>
+
+                                        <option value="88"  >Avia Kids</option>
+                                        <option value="89"  >Avirex</option>
+                                        <option value="90"  >Avon</option>
+                                        <option value="91"  >AWOL</option>
+                                        <option value="92"  >AWOL Kids</option>
+                                        <option value="93"  >Axo</option>
+
+                                        <option value="94"  >Azaleia</option>
+                                        <option value="95"  >Azzaro</option>
+                                        <option value="96"  >B de H</option>
+                                        <option value="97"  >Babolat</option>
+                                        <option value="98"  >baby phat</option>
+                                        <option value="99"  >baby phat kids</option>
+
+                                        <option value="101"  >babybotte</option>
+                                        <option value="100"  >Baby pliner's</option>
+                                        <option value="102"  >Bacco Bucci</option>
+                                        <option value="103"  >Baci</option>
+                                        <option value="104"  >Bad Boys</option>
+                                        <option value="105"  >Badgley Mischka</option>
+
+                                        <option value="106"  >Baffin</option>
+                                        <option value="107"  >Balenciaga</option>
+                                        <option value="108"  >Bali</option>
+                                        <option value="109"  >Bally</option>
+                                        <option value="110"  >Bandolino</option>
+                                        <option value="111"  >Barbie</option>
+
+                                        <option value="112"  >Barbo</option>
+                                        <option value="113"  >Bare Traps</option>
+                                        <option value="114"  >Bass</option>
+                                        <option value="115"  >Bass Kids</option>
+                                        <option value="116"  >Bastien</option>
+                                        <option value="117"  >Bates</option>
+
+                                        <option value="118"  >Batman</option>
+                                        <option value="119"  >Bay Street Kids</option>
+                                        <option value="120"  >Bay Studio</option>
+                                        <option value="121"  >BC Footwear</option>
+                                        <option value="122"  >BCBG Max Azria</option>
+                                        <option value="124"  >BCBGirls</option>
+
+                                        <option value="123"  >BCBG Paris</option>
+                                        <option value="125"  >Beacon Euroflex</option>
+                                        <option value="126"  >BearPaw</option>
+                                        <option value="127"  >Beatrix Ong</option>
+                                        <option value="128"  >BeautiFeel</option>
+                                        <option value="129"  >Bedford Stu</option>
+
+                                        <option value="130"  >Bedtime Safari</option>
+                                        <option value="131"  >Bella Vita</option>
+                                        <option value="132"  >Belle by Sigerson Morrison</option>
+                                        <option value="133"  >Belleville</option>
+                                        <option value="134"  >Bellini</option>
+                                        <option value="135"  >Ben Sherman</option>
+
+                                        <option value="136"  >Bernardo</option>
+                                        <option value="137"  >Bernie mev</option>
+                                        <option value="138"  >Betsey Johnson</option>
+                                        <option value="139"  >Bettye Muller</option>
+                                        <option value="140"  >Betula</option>
+                                        <option value="141"  >Beverly Feldman</option>
+
+                                        <option value="142"  >Bibi Kids</option>
+                                        <option value="143"  >Big Mac</option>
+                                        <option value="144"  >Bikkembergs</option>
+                                        <option value="145"  >Bikkembergs Juniors</option>
+                                        <option value="146"  >Bird 33 Boys</option>
+                                        <option value="147"  >Birkenstock</option>
+
+                                        <option value="148"  >Birkenstock Kids</option>
+                                        <option value="149"  >Birki's</option>
+                                        <option value="150"  >Birki's Kids</option>
+                                        <option value="152"  >Birthday Express</option>
+                                        <option value="151"  >Bite</option>
+                                        <option value="153"  >Biviel</option>
+
+                                        <option value="154"  >Black Diamond</option>
+                                        <option value="155"  >Blackhawk</option>
+                                        <option value="156"  >Bladerunner</option>
+                                        <option value="157"  >Blair</option>
+                                        <option value="158"  >Blend</option>
+                                        <option value="159"  >Blink</option>
+
+                                        <option value="160"  >Bloch</option>
+                                        <option value="161"  >Blondo</option>
+                                        <option value="162"  >Blowfish</option>
+                                        <option value="163"  >Blue Bottle Kids</option>
+                                        <option value="165"  >Blue Tux Shoes</option>
+                                        <option value="164"  >BLUES CLUES</option>
+
+                                        <option value="166"  >Blundstone</option>
+                                        <option value="167"  >Bo'em</option>
+                                        <option value="168"  >Bobux Kids</option>
+                                        <option value="169"  >Boca Classics</option>
+                                        <option value="170"  >Bogs</option>
+                                        <option value="171"  >Bolo</option>
+
+                                        <option value="172"  >Bombshelle</option>
+                                        <option value="173"  >Bongo</option>
+                                        <option value="174"  >Bonjour Fleurette</option>
+                                        <option value="175"  >Boot Barn</option>
+                                        <option value="176"  >Boreal</option>
+                                        <option value="177"  >Borgo degli Ulivi</option>
+
+                                        <option value="178"  >Born</option>
+                                        <option value="179"  >Born Kids</option>
+                                        <option value="180"  >BOSS Hugo Boss</option>
+                                        <option value="181"  >Boston Accent</option>
+                                        <option value="182"  >Bostonian</option>
+                                        <option value="183"  >Bottega Veneta</option>
+
+                                        <option value="184"  >Bouquets</option>
+                                        <option value="185"  >Boutique 58</option>
+                                        <option value="187"  >Boutique Nordstrom</option>
+                                        <option value="186"  >BOUTIQUE 9</option>
+                                        <option value="188"  >BP.</option>
+                                        <option value="190"  >Bragano</option>
+
+                                        <option value="189"  >Braqeez Kids</option>
+                                        <option value="191"  >Brass Boot</option>
+                                        <option value="192"  >Bratz</option>
+                                        <option value="193"  >Brian Atwood</option>
+                                        <option value="194"  >Bridget Shuster</option>
+                                        <option value="195"  >Brighton</option>
+
+                                        <option value="197"  >Brilliant</option>
+                                        <option value="196"  >Brine</option>
+                                        <option value="198"  >Bronx Shoes</option>
+                                        <option value="199"  >Brooks</option>
+                                        <option value="200"  >Brown Sound</option>
+                                        <option value="201"  >Browning</option>
+
+                                        <option value="202"  >BRUNO MAGLI</option>
+                                        <option value="203"  >Brunori</option>
+                                        <option value="204"  >Brunswick Bowling</option>
+                                        <option value="205"  >Buffalino</option>
+                                        <option value="206"  >Buffalo Technology</option>
+                                        <option value="207"  >Bum</option>
+
+                                        <option value="208"  >Burton</option>
+                                        <option value="211"  >Bushwacker</option>
+                                        <option value="209"  >Buster Brown</option>
+                                        <option value="210"  >Butter</option>
+                                        <option value="212"  >Buy Seasons</option>
+                                        <option value="213"  >C Collection by Cobian</option>
+
+                                        <option value="214"  >C Label</option>
+                                        <option value="215"  >C. Ronson</option>
+                                        <option value="216"  >C.B. Casual</option>
+                                        <option value="217"  >C1RCA</option>
+                                        <option value="218"  >Cabin Creek</option>
+                                        <option value="219"  >California Magdesians</option>
+
+                                        <option value="220"  >Caligarius</option>
+                                        <option value="221"  >Callaway Golf</option>
+                                        <option value="222"  >Callisto</option>
+                                        <option value="223"  >Calvin Klein</option>
+                                        <option value="224"  >Calvin Klein Collection</option>
+                                        <option value="225"  >Camileon Heels</option>
+
+                                        <option value="226"  >Camper</option>
+                                        <option value="227"  >Camper Kids</option>
+                                        <option value="228"  >Candela</option>
+                                        <option value="229"  >Cannondale</option>
+                                        <option value="230"  >Canyon River Blues</option>
+                                        <option value="231"  >Caparros</option>
+
+                                        <option value="232"  >Capezio</option>
+                                        <option value="233"  >Capezio Kids</option>
+                                        <option value="235"  >Car Shoe </option>
+                                        <option value="236"  >Carhartt</option>
+                                        <option value="237"  >CARLOS by Carlos Santana</option>
+                                        <option value="238"  >Carolina Herrera</option>
+
+                                        <option value="239"  >Carolina Shoe</option>
+                                        <option value="240"  >Carrera</option>
+                                        <option value="234"  >CARS</option>
+                                        <option value="241"  >Carter's</option>
+                                        <option value="242"  >Casadei</option>
+                                        <option value="243"  >Castaner</option>
+
+                                        <option value="244"  >Casual Friday</option>
+                                        <option value="245"  >Caterina Lucchi</option>
+                                        <option value="246"  >Caterpillar</option>
+                                        <option value="247"  >Catimini Kids</option>
+                                        <option value="248"  >Celine</option>
+                                        <option value="249"  >Cesare Paciotti</option>
+
+                                        <option value="250"  >Chaco</option>
+                                        <option value="251"  >Chaco Kids</option>
+                                        <option value="252"  >Chadwick's</option>
+                                        <option value="253"  >Champion</option>
+                                        <option value="254"  >Chanel</option>
+                                        <option value="255"  >Charles by Charles David</option>
+
+                                        <option value="256"  >Charles David</option>
+                                        <option value="257"  >Charlie 1 Horse</option>
+                                        <option value="258"  >Charlotte Ronson</option>
+                                        <option value="259"  >Charmone</option>
+                                        <option value="260"  >Cherie Kids</option>
+                                        <option value="261"  >Cherokee</option>
+
+                                        <option value="262"  >Chicago Skates</option>
+                                        <option value="263"  >Chili's</option>
+                                        <option value="264"  >Chinese Laundry</option>
+                                        <option value="265"  >Chippewa</option>
+                                        <option value="266"  >Chloe </option>
+                                        <option value="267"  >Chocolat</option>
+
+                                        <option value="268"  >Chooka Boot</option>
+                                        <option value="269"  >Christian Dior</option>
+                                        <option value="270"  >Christian Lacroix</option>
+                                        <option value="271"  >Christian Louboutin</option>
+                                        <option value="272"  >Ciao Bimbi Kids Shoes</option>
+                                        <option value="273"  >Cienta Kids Shoes</option>
+
+                                        <option value="274"  >Cindy Says</option>
+                                        <option value="275"  >Circa</option>
+                                        <option value="276"  >Circa Joan & David</option>
+                                        <option value="277"  >Circa Kids</option>
+                                        <option value="278"  >Circo</option>
+                                        <option value="280"  >Claiborne</option>
+
+                                        <option value="281"  >Clarks</option>
+                                        <option value="282"  >Classic Elements</option>
+                                        <option value="283"  >Claudia Ciuti</option>
+                                        <option value="284"  >Claudio Merazzi</option>
+                                        <option value="279"  >CL by Chinese Laundry</option>
+                                        <option value="285"  >Cobian</option>
+
+                                        <option value="286"  >Codeor</option>
+                                        <option value="287"  >Cole Haan</option>
+                                        <option value="288"  >Coleman</option>
+                                        <option value="289"  >Colin Robertson</option>
+                                        <option value="290"  >Colorful Creations</option>
+                                        <option value="291"  >Coloriffics</option>
+
+                                        <option value="292"  >Colter Creek</option>
+                                        <option value="293"  >Columbia</option>
+                                        <option value="294"  >Columbia Kids</option>
+                                        <option value="295"  >Connie</option>
+                                        <option value="296"  >Constanca Basto</option>
+                                        <option value="297"  >Converse</option>
+
+                                        <option value="298"  >Converse Kids</option>
+                                        <option value="299"  >Converse® by John Varvatos</option>
+                                        <option value="300"  >Corcoran</option>
+                                        <option value="301"  >Cordani</option>
+                                        <option value="302"  >Corso Como</option>
+                                        <option value="303"  >Cosmosis</option>
+
+                                        <option value="304"  >Costas</option>
+                                        <option value="305"  >Costume National</option>
+                                        <option value="306"  >Cougar</option>
+                                        <option value="307"  >Cougar Kids</option>
+                                        <option value="308"  >Cover Girl</option>
+                                        <option value="309"  >Covington</option>
+
+                                        <option value="310"  >Coyote</option>
+                                        <option value="311"  >Crabtree & Evelyn</option>
+                                        <option value="312"  >Creative Recreation</option>
+                                        <option value="313"  >Crispi</option>
+                                        <option value="314"  >Crocs</option>
+                                        <option value="315"  >Crocs Kids</option>
+
+                                        <option value="316"  >Cudas</option>
+                                        <option value="318"  >Curious George</option>
+                                        <option value="319"  >Curvetures</option>
+                                        <option value="317"  >Cushe</option>
+                                        <option value="320"  >Cydney Mandel</option>
+                                        <option value="321"  >Cynthia Rowley</option>
+
+                                        <option value="322"  >Cynthia Vincent</option>
+                                        <option value="324"  >D&G Junior</option>
+                                        <option value="323"  >D.Squared</option>
+                                        <option value="325"  >Dakine</option>
+                                        <option value="326"  >Dan Post</option>
+
+                                        <option value="327"  >daniblack</option>
+                                        <option value="328"  >Daniel Barbara</option>
+                                        <option value="329"  >Daniel Green</option>
+                                        <option value="330"  >Danner</option>
+                                        <option value="331"  >Dansko</option>
+                                        <option value="332"  >Dansko Kids</option>
+
+                                        <option value="333"  >David Tate</option>
+                                        <option value="334"  >DAVIS by Ruthie Davis</option>
+                                        <option value="335"  >DC</option>
+                                        <option value="336"  >DC Kids</option>
+                                        <option value="337"  >Deer Stags</option>
+                                        <option value="338"  >Dekline</option>
+
+                                        <option value="339"  >Delicious</option>
+                                        <option value="340"  >Delman</option>
+                                        <option value="341"  >Designer's Touch Kids</option>
+                                        <option value="342"  >Destroy Junior</option>
+                                        <option value="343"  >DETNY by Shane&Shawn</option>
+                                        <option value="344"  >Dexter</option>
+
+                                        <option value="345"  >Diadora</option>
+                                        <option value="346"  >Diadora Heritage</option>
+                                        <option value="347"  >Diana Broussard</option>
+                                        <option value="348"  >Diba</option>
+                                        <option value="349"  >Dickies</option>
+                                        <option value="350"  >Diego Di Lucca</option>
+
+                                        <option value="351"  >Diesel</option>
+                                        <option value="352"  >Diesel Kids</option>
+                                        <option value="353"  >Dingo</option>
+                                        <option value="354"  >Dinosoles</option>
+                                        <option value="355"  >Disney</option>
+                                        <option value="356"  >DKM Kid Shoes</option>
+
+                                        <option value="357"  >DKNY</option>
+                                        <option value="358"  >dkode</option>
+                                        <option value="359"  >Dockers</option>
+                                        <option value="360"  >Dockers Women's</option>
+                                        <option value="362"  >Dolce & Gabbana</option>
+                                        <option value="361"  >Dolce Vita</option>
+
+                                        <option value="363"  >Dollhouse</option>
+                                        <option value="364"  >Donald J Pliner</option>
+                                        <option value="365"  >Donald J Pliner Jrs</option>
+                                        <option value="366"  >Donald J Pliner Sport-i-que</option>
+                                        <option value="367"  >Donna Karan</option>
+                                        <option value="368"  >Donner Mountain</option>
+
+                                        <option value="369"  >Dora</option>
+                                        <option value="370"  >Dr. Martens</option>
+                                        <option value="371"  >Dr. Martens Kid's Collection</option>
+                                        <option value="372"  >Dr. Scholl's</option>
+                                        <option value="373"  >Draven</option>
+                                        <option value="374"  >Drew</option>
+
+                                        <option value="375"  >Dry-Shod</option>
+                                        <option value="376"  >DSQUARED2</option>
+                                        <option value="377"  >Duccio Del Duca</option>
+                                        <option value="378"  >Duck Head Footwear</option>
+                                        <option value="379"  >DuFFS</option>
+                                        <option value="380"  >DuFFS Kids</option>
+
+                                        <option value="381"  >Dunham</option>
+                                        <option value="382"  >Durango</option>
+                                        <option value="383"  >Durango Kids</option>
+                                        <option value="384"  >DVS Shoe Company</option>
+                                        <option value="385"  >DVS Shoe Company Kids</option>
+                                        <option value="386"  >E Junbesi</option>
+
+                                        <option value="387"  >E. Yomeda</option>
+                                        <option value="389"  >Earth</option>
+                                        <option value="390"  >Eastland</option>
+                                        <option value="391"  >easton</option>
+                                        <option value="392"  >Easy Spirit</option>
+                                        <option value="388"  >EA by Aigner</option>
+
+                                        <option value="393"  >Ecco</option>
+                                        <option value="394"  >Ecco Golf</option>
+                                        <option value="395"  >Ecco Kids</option>
+                                        <option value="396"  >Ecco Performance</option>
+                                        <option value="397"  >Ed Hardy</option>
+                                        <option value="398"  >Ed Hardy Kids</option>
+
+                                        <option value="399"  >Edmundo Castillo</option>
+                                        <option value="400"  >Ektelon</option>
+                                        <option value="401"  >El Naturalista</option>
+                                        <option value="402"  >EL VAQUERO</option>
+                                        <option value="403"  >Element</option>
+                                        <option value="404"  >Elle</option>
+
+                                        <option value="407"  >Ellen Tracy</option>
+                                        <option value="405"  >Ellesse</option>
+                                        <option value="406"  >Ellie Shoes</option>
+                                        <option value="408"  >Emerica</option>
+                                        <option value="409"  >Emerica Kids</option>
+                                        <option value="410"  >Emilio Pucci</option>
+
+                                        <option value="411"  >Emporio Armani</option>
+                                        <option value="412"  >Emu Kids</option>
+                                        <option value="413"  >Enigma</option>
+                                        <option value="416"  >Enyce</option>
+                                        <option value="414"  >Enzo Angiolini</option>
+                                        <option value="415"  >Enzo Kids</option>
+
+                                        <option value="417"  >Eric Michael</option>
+                                        <option value="418"  >éS</option>
+                                        <option value="419"  >éS Kids</option>
+                                        <option value="420"  >Espace</option>
+                                        <option value="421"  >Esprit</option>
+                                        <option value="422"  >Esquivel</option>
+
+                                        <option value="423"  >Etienne Aigner</option>
+                                        <option value="424"  >etnies</option>
+                                        <option value="425"  >etnies Kids</option>
+                                        <option value="426"  >Etonic</option>
+                                        <option value="427"  >Etro</option>
+                                        <option value="428"  >Eurostep</option>
+
+                                        <option value="429"  >euroWellness</option>
+                                        <option value="430"  >Evisu</option>
+                                        <option value="431"  >Exchange</option>
+                                        <option value="432"  >Exchange by Charles David</option>
+                                        <option value="456"  >Façonnable</option>
+                                        <option value="433"  >Faryl Robin</option>
+
+                                        <option value="434"  >Favorite Characters</option>
+                                        <option value="435"  >Feetures</option>
+                                        <option value="437"  >Fender Footwear</option>
+                                        <option value="436"  >Fendi</option>
+                                        <option value="438"  >Ferragamo</option>
+                                        <option value="439"  >Fila</option>
+
+                                        <option value="440"  >Fila Kids</option>
+                                        <option value="441"  >Fila Performance</option>
+                                        <option value="442"  >Finn Comfort</option>
+                                        <option value="443"  >Fiorucci Kids</option>
+                                        <option value="444"  >Fitzwell</option>
+                                        <option value="445"  >Five Ten</option>
+
+                                        <option value="446"  >Florsheim</option>
+                                        <option value="447"  >Fly Flot</option>
+                                        <option value="448"  >FLY LONDON</option>
+                                        <option value="449"  >Foamtreads</option>
+                                        <option value="450"  >Foamtreads Kids</option>
+                                        <option value="452"  >Foot Petals</option>
+
+                                        <option value="453"  >Footprints</option>
+                                        <option value="451"  >Foot Joy</option>
+                                        <option value="454"  >Fornarina</option>
+                                        <option value="455"  >Forum</option>
+                                        <option value="457"  >Franco Sarto</option>
+                                        <option value="458"  >Frank Wright</option>
+
+                                        <option value="459"  >Fratelli</option>
+                                        <option value="460"  >Fred Perry</option>
+                                        <option value="461"  >Freed of London</option>
+                                        <option value="462"  >Freesby Kids</option>
+                                        <option value="463"  >French Connection</option>
+                                        <option value="464"  >French Sole</option>
+
+                                        <option value="465"  >Frye</option>
+                                        <option value="466"  >FUBU</option>
+                                        <option value="467"  >G. Series</option>
+                                        <option value="468"  >Gabor</option>
+                                        <option value="469"  >Gabriella Rocha</option>
+                                        <option value="470"  >Gallaz</option>
+
+                                        <option value="471"  >Garmont</option>
+                                        <option value="472"  >Garvalin Kids</option>
+                                        <option value="473"  >GBB Kids</option>
+                                        <option value="474"  >GBX</option>
+                                        <option value="475"  >Gee WaWa</option>
+                                        <option value="476"  >Genon</option>
+
+                                        <option value="477"  >Gentle Souls</option>
+                                        <option value="478"  >Georgia Boot</option>
+                                        <option value="479"  >Geox</option>
+                                        <option value="480"  >Geox Kids</option>
+                                        <option value="481"  >Gianfranco Ferre</option>
+                                        <option value="482"  >Giorgio Brutini</option>
+
+                                        <option value="483"  >Giuseppe Zanotti</option>
+                                        <option value="484"  >Givenchy</option>
+                                        <option value="485"  >Globe</option>
+                                        <option value="486"  >Globe Kids</option>
+                                        <option value="487"  >Goffredo Fantini</option>
+                                        <option value="488"  >Gola</option>
+
+                                        <option value="489"  >GoLite</option>
+                                        <option value="490"  >Gordon Rush</option>
+                                        <option value="491"  >Graffiti Girlz</option>
+                                        <option value="492"  >Grasshoppers</option>
+                                        <option value="493"  >Gravis</option>
+                                        <option value="494"  >groove footwear</option>
+
+                                        <option value="495"  >Gucci </option>
+                                        <option value="496"  >GUESS</option>
+                                        <option value="497"  >GUESS Kids'</option>
+                                        <option value="499"  >H.S. Trask</option>
+                                        <option value="498"  >H.S. Musical</option>
+                                        <option value="500"  >Haband</option>
+
+                                        <option value="501"  >Haflinger</option>
+                                        <option value="502"  >Hale Bob</option>
+                                        <option value="503"  >Hammacher Schlemmer</option>
+                                        <option value="504"  >Harbor Bay</option>
+                                        <option value="505"  >Harley-Davidson</option>
+                                        <option value="506"  >Harlot</option>
+
+                                        <option value="507"  >Harry's of London</option>
+                                        <option value="508"  >Havaianas</option>
+                                        <option value="509"  >Havana Joe</option>
+                                        <option value="510"  >Hawk</option>
+                                        <option value="511"  >Heelys</option>
+                                        <option value="512"  >Heirs & Grace</option>
+
+                                        <option value="513"  >Helle Comfort</option>
+                                        <option value="514"  >Hello Kitty</option>
+                                        <option value="515"  >Helly Hansen</option>
+                                        <option value="516"  >Henri Lloyd</option>
+                                        <option value="517"  >Hermes </option>
+                                        <option value="518"  >Hi-Tec</option>
+
+                                        <option value="519"  >Hirica</option>
+                                        <option value="520"  >HJC</option>
+                                        <option value="521"  >Hogan</option>
+                                        <option value="522"  >Hollywould</option>
+                                        <option value="523"  >Honda</option>
+                                        <option value="526"  >HotFash.com</option>
+
+                                        <option value="527"  >Hotter Footwear</option>
+                                        <option value="524"  >Hot Kiss</option>
+                                        <option value="525"  >Hot Wheels</option>
+                                        <option value="528"  >House of Dereon</option>
+                                        <option value="529"  >HUGO Hugo Boss</option>
+                                        <option value="530"  >Hummel</option>
+
+                                        <option value="531"  >Hummer</option>
+                                        <option value="532"  >Hunter</option>
+                                        <option value="533"  >Hurley</option>
+                                        <option value="534"  >Hush Puppies</option>
+                                        <option value="535"  >Hush Puppies Kids</option>
+                                        <option value="536"  >Hush Puppies Slippers</option>
+
+                                        <option value="537"  >Hype</option>
+                                        <option value="538"  >I Love Comfort</option>
+                                        <option value="540"  >I.Travel</option>
+                                        <option value="541"  >Iacovelli Kids</option>
+                                        <option value="542"  >Icebug</option>
+                                        <option value="543"  >Icon</option>
+
+                                        <option value="545"  >Il Sandalo</option>
+                                        <option value="546"  >imagine</option>
+                                        <option value="547"  >Impo</option>
+                                        <option value="548"  >Impulse</option>
+                                        <option value="549"  >Impulse by Steeple Gate</option>
+                                        <option value="550"  >Indigo by Clarks</option>
+
+                                        <option value="551"  >Inov-8</option>
+                                        <option value="552"  >Insport</option>
+                                        <option value="553"  >Instride</option>
+                                        <option value="554"  >Ipath</option>
+                                        <option value="555"  >Irish Setter</option>
+                                        <option value="556"  >Irregular Choice</option>
+
+                                        <option value="557"  >Isaac Mizrahi</option>
+                                        <option value="558"  >Isabella Fiore</option>
+                                        <option value="559"  >Island Hawaii</option>
+                                        <option value="560"  >Island Slipper</option>
+                                        <option value="561"  >Isotoner</option>
+                                        <option value="562"  >Ix</option>
+
+                                        <option value="563"  >IZOD</option>
+                                        <option value="539"  >I Path</option>
+                                        <option value="564"  >J Lo</option>
+                                        <option value="565"  >J-41</option>
+                                        <option value="567"  >J. Lindeberg</option>
+                                        <option value="569"  >J. Reneé</option>
+
+                                        <option value="570"  >J. Shoes</option>
+                                        <option value="566"  >J.Ferrar</option>
+                                        <option value="568"  >J.Renee</option>
+                                        <option value="571"  >Jack Rogers</option>
+                                        <option value="572"  >Jacqueline Ferrar</option>
+                                        <option value="573"  >Jacques Fath</option>
+
+                                        <option value="574"  >Jacques Levine</option>
+                                        <option value="576"  >James Oliver</option>
+                                        <option value="575"  >Jana Feifer</option>
+                                        <option value="578"  >Jean-Michel Cazabat</option>
+                                        <option value="577"  >Jeannot</option>
+                                        <option value="579"  >Jefferies Socks</option>
+
+                                        <option value="580"  >JEFFREY CAMPBELL</option>
+                                        <option value="581"  >Jela Kids</option>
+                                        <option value="582"  >Jennifer Lopez</option>
+                                        <option value="583"  >Jessica Bennett</option>
+                                        <option value="584"  >Jessica Simpson</option>
+                                        <option value="585"  >Jil Sander</option>
+
+                                        <option value="586"  >Jimmy Choo </option>
+                                        <option value="587"  >Jo Ghost</option>
+                                        <option value="588"  >JOAN & DAVID</option>
+                                        <option value="589"  >Joe Rocket</option>
+                                        <option value="590"  >Joey O</option>
+                                        <option value="592"  >John Fluevog</option>
+
+                                        <option value="593"  >John Lobb</option>
+                                        <option value="594"  >John Varvatos</option>
+                                        <option value="595"  >Johnston & Murphy</option>
+                                        <option value="591"  >John Deere</option>
+                                        <option value="596"  >Joie</option>
+                                        <option value="597"  >Jordan</option>
+
+                                        <option value="598"  >Jos. A. Bank</option>
+                                        <option value="599"  >Josef Seibel</option>
+                                        <option value="600"  >Josmo Shoes</option>
+                                        <option value="601"  >Juicy Couture</option>
+                                        <option value="602"  >Julius and Friends</option>
+                                        <option value="603"  >JUMP</option>
+
+                                        <option value="604"  >Jumping Jacks</option>
+                                        <option value="605"  >Just Cavalli</option>
+                                        <option value="606"  >Justin</option>
+                                        <option value="607"  >Justin Boots</option>
+                                        <option value="609"  >K-Swiss</option>
+                                        <option value="608"  >K. Jacques</option>
+
+                                        <option value="610"  >K2 Skates</option>
+                                        <option value="611"  >Kaepa</option>
+                                        <option value="612"  >Kamik</option>
+                                        <option value="613"  >Kamik Kids</option>
+                                        <option value="614"  >KangaROOS</option>
+                                        <option value="615"  >KangaROOS Kids</option>
+
+                                        <option value="616"  >Kangol</option>
+                                        <option value="617"  >Kate Spade</option>
+                                        <option value="618"  >Kayland</option>
+                                        <option value="619"  >Keds</option>
+                                        <option value="620"  >Keds Kids</option>
+                                        <option value="621"  >Keen</option>
+
+                                        <option value="622"  >Keen Kids</option>
+                                        <option value="623"  >Kelme</option>
+                                        <option value="624"  >Kenneth Cole New York</option>
+                                        <option value="625"  >Kenneth Cole Reaction</option>
+                                        <option value="626"  >Kenneth Cole Reaction Kids</option>
+                                        <option value="627"  >Kenzie</option>
+
+                                        <option value="628"  >Kenzo</option>
+                                        <option value="629"  >Khombu</option>
+                                        <option value="630"  >Khombu Kids</option>
+                                        <option value="631"  >Kid Express</option>
+                                        <option value="632"  >Kiddopotamus</option>
+                                        <option value="633"  >Killah</option>
+
+                                        <option value="635"  >Kimchi & Blue</option>
+                                        <option value="634"  >Kimel Design Studio</option>
+                                        <option value="636"  >Kitson</option>
+                                        <option value="637"  >Kitson Kids</option>
+                                        <option value="638"  >Klogs</option>
+                                        <option value="639"  >Koflach</option>
+
+                                        <option value="640"  >koolaburra</option>
+                                        <option value="641"  >Kork-Ease</option>
+                                        <option value="642"  >KORS Michael Kors</option>
+                                        <option value="643"  >KORS Michael Kors Kids</option>
+                                        <option value="645"  >Kumfs</option>
+                                        <option value="644"  >Kustom</option>
+
+                                        <option value="669"  >L'Autre Chose</option>
+                                        <option value="646"  >L'Autre Chose</option>
+                                        <option value="647"  >L.A.M.B.</option>
+                                        <option value="648"  >L.A. Gear</option>
+                                        <option value="649"  >L.B. Evans</option>
+                                        <option value="650"  >L.L. Bean</option>
+
+                                        <option value="651"  >La Canadienne</option>
+                                        <option value="652"  >La Plume</option>
+                                        <option value="653"  >La Sportiva</option>
+                                        <option value="654"  >Lacoste</option>
+                                        <option value="655"  >Lacoste Kids</option>
+                                        <option value="656"  >LaCrosse</option>
+
+                                        <option value="657"  >Lafuma</option>
+                                        <option value="658"  >Lakai</option>
+                                        <option value="659"  >LAMB</option>
+                                        <option value="661"  >Lambertson Truex</option>
+                                        <option value="660"  >Lamo</option>
+                                        <option value="662"  >Lands' End</option>
+
+                                        <option value="663"  >Lanvin</option>
+                                        <option value="664"  >Laredo</option>
+                                        <option value="665"  >Latinas</option>
+                                        <option value="666"  >Laundry by Shelli Segal</option>
+                                        <option value="667"  >Laura Scott</option>
+                                        <option value="668"  >Lauren by Ralph Lauren</option>
+
+                                        <option value="672"  >Le Chameau of France</option>
+                                        <option value="673"  >Le Coq Sportif</option>
+                                        <option value="670"  >Leather Classics</option>
+                                        <option value="671"  >Leather Up</option>
+                                        <option value="674"  >Lego</option>
+                                        <option value="675"  >Lelli Kelly Kids</option>
+
+                                        <option value="676"  >Leo's</option>
+                                        <option value="677"  >Leopoldo Giordano</option>
+                                        <option value="678"  >Lesilla</option>
+                                        <option value="679"  >Levi's</option>
+                                        <option value="680"  >Lia Bijou</option>
+                                        <option value="681"  >Liberty of London</option>
+
+                                        <option value="682"  >Life Is Good</option>
+                                        <option value="683"  >Life Outdoors</option>
+                                        <option value="684"  >LifeStride</option>
+                                        <option value="686"  >Lilly Pulitzer</option>
+                                        <option value="685"  >Lil Bratz</option>
+                                        <option value="687"  >Linea Blu by Cordani</option>
+
+                                        <option value="688"  >Linea Paolo</option>
+                                        <option value="689"  >Little Laundry</option>
+                                        <option value="690"  >LIVS</option>
+                                        <option value="691"  >Liz Baker</option>
+                                        <option value="693"  >Lizard</option>
+                                        <option value="692"  >Liz Claiborne</option>
+
+                                        <option value="694"  >Loewe</option>
+                                        <option value="695"  >Logo Athletic</option>
+                                        <option value="696"  >Lorenzo Banfi</option>
+                                        <option value="697"  >Lotto</option>
+                                        <option value="698"  >Lotto Leggenda</option>
+                                        <option value="699"  >Lowa</option>
+
+                                        <option value="700"  >Lozzi</option>
+                                        <option value="701"  >Luca Stefani</option>
+                                        <option value="702"  >Lucchese</option>
+                                        <option value="703"  >Luciano Padovan </option>
+                                        <option value="704"  >Lucy</option>
+                                        <option value="705"  >Lugz</option>
+
+                                        <option value="706"  >Lugz Kids</option>
+                                        <option value="707"  >Luichiny</option>
+                                        <option value="708"  >Lumiani</option>
+                                        <option value="709"  >Luna Rosa</option>
+                                        <option value="710"  >Lux</option>
+                                        <option value="711"  >Lynx</option>
+
+                                        <option value="712"  >M by Morenatom</option>
+                                        <option value="713"  >M.O.D.</option>
+                                        <option value="714"  >Macbeth</option>
+                                        <option value="715"  >Mad Rock</option>
+                                        <option value="716"  >Madden Girl</option>
+                                        <option value="717"  >Madeline</option>
+
+                                        <option value="718"  >MaDonna</option>
+                                        <option value="719"  >Magdesians</option>
+                                        <option value="720"  >magic32</option>
+                                        <option value="721"  >Magnum</option>
+                                        <option value="722"  >Makaveli Branded</option>
+                                        <option value="723"  >Malo</option>
+
+                                        <option value="724"  >Maloles</option>
+                                        <option value="725"  >Manolo Blahnik</option>
+                                        <option value="739"  >Maravilla</option>
+                                        <option value="726"  >Marc by Marc Jacobs</option>
+                                        <option value="728"  >Marc Jacobs</option>
+                                        <option value="729"  >Marc Shoes</option>
+
+                                        <option value="730"  >Marco Delli</option>
+                                        <option value="727"  >Marc Ecko</option>
+                                        <option value="731"  >Margaritaville</option>
+                                        <option value="732"  >Mariano Campanile</option>
+                                        <option value="733"  >Mario Bologna</option>
+                                        <option value="735"  >Mark Nason</option>
+
+                                        <option value="736"  >Markon</option>
+                                        <option value="734"  >Marni</option>
+                                        <option value="737"  >Martinez Valero</option>
+                                        <option value="738"  >Martino</option>
+                                        <option value="740"  >Masai Barefoot Technology</option>
+                                        <option value="741"  >Master Replicas</option>
+
+                                        <option value="742"  >Materia Prima by Goffredo Fantini</option>
+                                        <option value="743"  >Matiko</option>
+                                        <option value="744"  >Matisse</option>
+                                        <option value="745"  >Matt Bernson</option>
+                                        <option value="746"  >Matterhorn Footwear</option>
+                                        <option value="747"  >mavi</option>
+
+                                        <option value="748"  >Max Azria</option>
+                                        <option value="749"  >Max Safety Footwear</option>
+                                        <option value="750"  >Max Studio</option>
+                                        <option value="751"  >Maxine Of Canada</option>
+                                        <option value="752"  >MBT</option>
+                                        <option value="753"  >Me Too</option>
+
+                                        <option value="754"  >Mecca</option>
+                                        <option value="755"  >Mechanix Wear</option>
+                                        <option value="756"  >Mechgear</option>
+                                        <option value="757"  >Medium</option>
+                                        <option value="758"  >Mehandi</option>
+                                        <option value="759"  >Mephisto</option>
+
+                                        <option value="760"  >MERMAID</option>
+                                        <option value="761"  >Merona</option>
+                                        <option value="762"  >MERRELL</option>
+                                        <option value="763"  >Merrill</option>
+                                        <option value="764"  >Metaphor</option>
+                                        <option value="765"  >Mezlan</option>
+
+                                        <option value="766"  >MIA</option>
+                                        <option value="767"  >Mia Kids</option>
+                                        <option value="768"  >Michael James</option>
+                                        <option value="769"  >Michael Kors</option>
+                                        <option value="770"  >MICHAEL Michael Kors</option>
+                                        <option value="771"  >Michael Toschi</option>
+
+                                        <option value="772"  >Michelle K</option>
+                                        <option value="773"  >Michelle K Kids</option>
+                                        <option value="774"  >Mikala</option>
+                                        <option value="775"  >Military Gear</option>
+                                        <option value="776"  >Minibel Kids</option>
+                                        <option value="777"  >Minnetonka</option>
+
+                                        <option value="778"  >Minnetonka Moccasin</option>
+                                        <option value="779"  >Mion</option>
+                                        <option value="780"  >Mion Kids</option>
+                                        <option value="781"  >Miss Bisou</option>
+                                        <option value="782"  >MISS SIXTY</option>
+                                        <option value="783"  >Miss Sixty Kids</option>
+
+                                        <option value="784"  >Missoni</option>
+                                        <option value="785"  >Mitre</option>
+                                        <option value="786"  >Miu Miu</option>
+                                        <option value="787"  >Mixit</option>
+                                        <option value="788"  >Mizuno</option>
+                                        <option value="789"  >Mizuno Running</option>
+
+                                        <option value="790"  >Mod8</option>
+                                        <option value="791"  >Moda Spana</option>
+                                        <option value="792"  >Modellista</option>
+                                        <option value="793"  >Modern Amusement by Sperry</option>
+                                        <option value="794"  >Modern Vintage</option>
+                                        <option value="795"  >Moki Kids</option>
+
+                                        <option value="796"  >Mondo Di Marco</option>
+                                        <option value="797"  >Montrail</option>
+                                        <option value="799"  >Mootsies Tootsies</option>
+                                        <option value="800"  >Mootsies Tootsies Kids</option>
+                                        <option value="801"  >Morgan&Milo Kids</option>
+
+                                        <option value="802"  >Moschino</option>
+                                        <option value="803"  >Moschino Kids Footwear</option>
+                                        <option value="798"  >Mother Goose</option>
+                                        <option value="804"  >MUDD</option>
+                                        <option value="805"  >Munro</option>
+                                        <option value="806"  >MYSTIQUE</option>
+
+                                        <option value="807"  >N.Y.L.A.</option>
+                                        <option value="808"  >N.Y. Transit</option>
+                                        <option value="809"  >NaNa</option>
+                                        <option value="810"  >Nancy Geist</option>
+                                        <option value="811"  >Nanette Lepore</option>
+                                        <option value="821"  >NAOT</option>
+
+                                        <option value="812"  >Naot Footwear</option>
+                                        <option value="813"  >Nascar</option>
+                                        <option value="814"  >Natural Comfort</option>
+                                        <option value="815"  >Natural Sport</option>
+                                        <option value="823"  >Naturalizer</option>
+                                        <option value="816"  >Naturalizer</option>
+
+                                        <option value="822"  >Natural Comfort</option>
+                                        <option value="824"  >Naturino</option>
+                                        <option value="817"  >Naturino</option>
+                                        <option value="818"  >Nau?ghty Monkey</option>
+                                        <option value="825"  >NAUGHTY MONKEY</option>
+                                        <option value="819"  >Nautica</option>
+
+                                        <option value="826"  >Nautica</option>
+                                        <option value="820"  >Nautilus</option>
+                                        <option value="827"  >Nerf</option>
+                                        <option value="828"  >Nevados</option>
+                                        <option value="829"  >New Balance</option>
+                                        <option value="830"  >New Balance Classics</option>
+
+                                        <option value="831"  >New Balance Kids</option>
+                                        <option value="832"  >New Rock</option>
+                                        <option value="833"  >New Twist</option>
+                                        <option value="834"  >Nickels</option>
+                                        <option value="835"  >Nickels Soft</option>
+                                        <option value="836"  >Nico + Bella Kids</option>
+
+                                        <option value="837"  >Nicole</option>
+                                        <option value="838"  >Nike</option>
+                                        <option value="839"  >Nimi Kids</option>
+                                        <option value="840"  >Nina</option>
+                                        <option value="841"  >Nina Kids</option>
+                                        <option value="842"  >Nine West</option>
+
+                                        <option value="843"  >Nine West Kids</option>
+                                        <option value="844"  >NOMAD</option>
+                                        <option value="845"  >Nomass</option>
+                                        <option value="846"  >Not Rated</option>
+                                        <option value="847"  >nOthinZ</option>
+                                        <option value="848"  >nuala</option>
+
+                                        <option value="849"  >Nunn Bush</option>
+                                        <option value="850"  >Nurse Mates</option>
+                                        <option value="851"  >NYLA SHOES</option>
+                                        <option value="852"  >O'Neill</option>
+                                        <option value="853"  >O'Neill Kids</option>
+                                        <option value="854"  >Oakley</option>
+
+                                        <option value="855"  >Ocean Minded</option>
+                                        <option value="856"  >Ocean Pacific</option>
+                                        <option value="857"  >Oh Deer!</option>
+                                        <option value="858"  >Oh! Shoes</option>
+                                        <option value="859"  >Oilily Kids</option>
+                                        <option value="860"  >Old Friend</option>
+
+                                        <option value="861"  >Old Gringo</option>
+                                        <option value="862"  >Old Maui Brand</option>
+                                        <option value="863"  >OluKai</option>
+                                        <option value="864"  >On Your Feet</option>
+                                        <option value="865"  >Onex</option>
+                                        <option value="866"  >Onitsuka Tiger by Asics</option>
+
+                                        <option value="867"  >Onitsuka Tiger Kids by Asics</option>
+                                        <option value="868"  >OSCAR</option>
+                                        <option value="869"  >Oscar de la Renta</option>
+                                        <option value="872"  >OshKosh B'gosh</option>
+                                        <option value="870"  >Osiris</option>
+                                        <option value="871"  >Osiris Kids</option>
+
+                                        <option value="873"  >P. Miller</option>
+                                        <option value="874"  >P.R.</option>
+                                        <option value="875"  >Pablosky Kids</option>
+                                        <option value="876"  >Pajar</option>
+                                        <option value="877"  >Pajar Kids</option>
+                                        <option value="878"  >Palladium</option>
+
+                                        <option value="879"  >Palladium Kids</option>
+                                        <option value="880"  >Paloma Barcelo</option>
+                                        <option value="881"  >Pan E Tulipani</option>
+                                        <option value="882"  >Papillio</option>
+                                        <option value="883"  >Paris Blues</option>
+                                        <option value="884"  >Parish</option>
+
+                                        <option value="885"  >Pasitos Kids</option>
+                                        <option value="886"  >Paul & Joe</option>
+                                        <option value="887"  >Paul Green</option>
+                                        <option value="888"  >Paul Smith</option>
+                                        <option value="890"  >Peach</option>
+                                        <option value="889"  >Pearl Izumi</option>
+
+                                        <option value="891"  >Peche d' Amour</option>
+                                        <option value="892"  >pediped</option>
+                                        <option value="893"  >Pedro Garcia</option>
+                                        <option value="894"  >Pelle Moda</option>
+                                        <option value="895"  >Penguin</option>
+                                        <option value="896"  >Penny Loves Kenny</option>
+
+                                        <option value="897"  >Pepe Jeans</option>
+                                        <option value="898"  >perfectsole</option>
+                                        <option value="899"  >perlina</option>
+                                        <option value="900"  >Perry Ellis</option>
+                                        <option value="901"  >Peter Kaiser</option>
+                                        <option value="902"  >Petit</option>
+
+                                        <option value="903"  >PF Flyers</option>
+                                        <option value="904"  >Phat Farm</option>
+                                        <option value="905"  >Phat Farm Kids</option>
+                                        <option value="906"  >Pirates</option>
+                                        <option value="907"  >Pirelli</option>
+                                        <option value="908"  >Play 'N' Wash</option>
+
+                                        <option value="909"  >PLAYBOY</option>
+                                        <option value="910"  >Playhouse Kids</option>
+                                        <option value="911"  >Pleaser USA</option>
+                                        <option value="912"  >Pliner Kid's</option>
+                                        <option value="913"  >Poetic Licence</option>
+                                        <option value="914"  >Pollini</option>
+
+                                        <option value="915"  >Polo Ralph Lauren</option>
+                                        <option value="916"  >Polo Ralph Lauren Kids'</option>
+                                        <option value="917"  >Polo Sport by Ralph Lauren</option>
+                                        <option value="918"  >Pony</option>
+                                        <option value="919"  >Pony Kids</option>
+                                        <option value="920"  >POWER PUFF</option>
+
+                                        <option value="921"  >Power Rangers</option>
+                                        <option value="922"  >Prada</option>
+                                        <option value="923"  >Prari</option>
+                                        <option value="924"  >Preschoolians Kids</option>
+                                        <option value="925"  >Prevata</option>
+                                        <option value="926"  >Prima Base</option>
+
+                                        <option value="927"  >Primigi Kids</option>
+                                        <option value="928"  >Prince</option>
+                                        <option value="929"  >Princess</option>
+                                        <option value="930"  >Privo</option>
+                                        <option value="931"  >Pro-Keds</option>
+                                        <option value="932"  >Projekt4</option>
+
+                                        <option value="933"  >Propét</option>
+                                        <option value="934"  >PUMA</option>
+                                        <option value="935"  >Puma Kids</option>
+                                        <option value="936"  >PUMA Sport Fashion</option>
+                                        <option value="937"  >Punkrose</option>
+                                        <option value="938"  >Pure Chocolat</option>
+
+                                        <option value="939"  >Quark</option>
+                                        <option value="940"  >Quiksilver</option>
+                                        <option value="941"  >Rachel Kids</option>
+                                        <option value="942"  >Radioactive Golf</option>
+                                        <option value="943"  >Rafe New York</option>
+                                        <option value="944"  >Rafters</option>
+
+                                        <option value="945"  >Ragg Kids</option>
+                                        <option value="946"  >Raichle</option>
+                                        <option value="947"  >Rainbow</option>
+                                        <option value="948"  >Ralph Lauren</option>
+                                        <option value="949"  >Ralph Lauren Layette Kids</option>
+                                        <option value="950"  >Rampage</option>
+
+                                        <option value="951"  >Randolph Duke</option>
+                                        <option value="952"  >Ranger</option>
+                                        <option value="953"  >Rangoni of Florence</option>
+                                        <option value="954"  >ras</option>
+                                        <option value="955"  >Re-Mix</option>
+                                        <option value="956"  >Reaction</option>
+
+                                        <option value="957"  >Rebeca Sanver</option>
+                                        <option value="958"  >Rebels</option>
+                                        <option value="959"  >Red by Marc Ecko</option>
+                                        <option value="960"  >Red Tape</option>
+                                        <option value="961"  >Red Wing Motorcycle</option>
+                                        <option value="962"  >Red Wing Shoes</option>
+
+                                        <option value="963"  >Reebok</option>
+                                        <option value="964"  >Reebok Kids</option>
+                                        <option value="965"  >Reebok Lifestyle</option>
+                                        <option value="966"  >Reebok Team</option>
+                                        <option value="967"  >Reef</option>
+                                        <option value="968"  >Rene Caovilla</option>
+
+                                        <option value="969"  >Replay Footwear</option>
+                                        <option value="970"  >Replay Kids</option>
+                                        <option value="971"  >Report</option>
+                                        <option value="972"  >Report Signature</option>
+                                        <option value="973"  >Restricted</option>
+                                        <option value="974"  >Rhino Red by Marc Ecko</option>
+
+                                        <option value="975"  >Rhino Red by Marc Ecko Kids</option>
+                                        <option value="976"  >Rhino Unltd by Marc Ecko</option>
+                                        <option value="977"  >Rhino Unltd by Marc Ecko Kids</option>
+                                        <option value="978"  >Rialto</option>
+                                        <option value="979"  >Ricardo Beverly Hills</option>
+                                        <option value="980"  >Richard Tyler</option>
+
+                                        <option value="981"  >Richter Kids Shoes</option>
+                                        <option value="982"  >Ricosta Kids</option>
+                                        <option value="983"  >Rider</option>
+                                        <option value="984"  >Rieker</option>
+                                        <option value="985"  >Rios Of Mercedes</option>
+                                        <option value="986"  >Rip Curl</option>
+
+                                        <option value="987"  >Rival</option>
+                                        <option value="988"  >Riviera</option>
+                                        <option value="989"  >Robeez</option>
+                                        <option value="990"  >Robert Clergerie</option>
+                                        <option value="992"  >Roberto Cavalli</option>
+                                        <option value="993"  >Roberto Cavalli Kids</option>
+
+                                        <option value="994"  >Roberto Guerrini</option>
+                                        <option value="991"  >Robert Wayne</option>
+                                        <option value="995"  >Rocawear</option>
+                                        <option value="996"  >Rocco Barocco</option>
+                                        <option value="997"  >Rocco P.</option>
+                                        <option value="998"  >Rock & Republic</option>
+
+                                        <option value="999"  >Rockers</option>
+                                        <option value="1000"  >Rocket Dog</option>
+                                        <option value="1001"  >Rockport</option>
+                                        <option value="1002"  >Rockport Kids</option>
+                                        <option value="1003"  >Rockport Works</option>
+                                        <option value="1004"  >Rocky</option>
+
+                                        <option value="1005"  >Roger Vivier</option>
+                                        <option value="1006"  >Rogue Shoes</option>
+                                        <option value="1007"  >Rollerblade</option>
+                                        <option value="1008"  >Romika</option>
+                                        <option value="1009"  >Romika Kids</option>
+                                        <option value="1010"  >Roots</option>
+
+                                        <option value="1011"  >Roper</option>
+                                        <option value="1012"  >Ros Hommerson</option>
+                                        <option value="1013"  >Rothco</option>
+                                        <option value="1014"  >Roxy</option>
+                                        <option value="1015"  >Roxy Kids</option>
+                                        <option value="1016"  >Royal Elastics</option>
+
+                                        <option value="1017"  >rsvp</option>
+                                        <option value="1018"  >Rubber Duck</option>
+                                        <option value="1019"  >Rugged Shark</option>
+                                        <option value="1020"  >Rush</option>
+                                        <option value="1021"  >Ryka</option>
+                                        <option value="1022"  >RZ Design</option>
+
+                                        <option value="1023"  >Sag Harbor</option>
+                                        <option value="1024"  >Saga Clogs</option>
+                                        <option value="1025"  >Salomon</option>
+                                        <option value="1026"  >Salomon Kids</option>
+                                        <option value="1028"  >Salt Water Sandal by Hoy Shoes</option>
+                                        <option value="1027"  >Salvatore Ferragamo</option>
+
+                                        <option value="1029"  >Sam & Libby</option>
+                                        <option value="1030"  >Sam & Libby Girls</option>
+                                        <option value="1031"  >Sam Edelman</option>
+                                        <option value="1033"  >Sandro Moscoloni</option>
+                                        <option value="1034"  >Sanita</option>
+
+                                        <option value="1035"  >Santoni</option>
+                                        <option value="1036"  >Sanuk</option>
+                                        <option value="1032"  >San Remo</option>
+                                        <option value="1037"  >Saucony</option>
+                                        <option value="1038"  >Saucony Kids</option>
+                                        <option value="1039"  >Saucony Originals</option>
+
+                                        <option value="1040"  >Saugus Shoe Company</option>
+                                        <option value="1041"  >Sbicca</option>
+                                        <option value="1042"  >Scarface</option>
+                                        <option value="1043"  >Scarpa</option>
+                                        <option value="1044"  >School Issue</option>
+                                        <option value="1045"  >Schutz</option>
+
+                                        <option value="1046"  >Scorah Pattullo</option>
+                                        <option value="1047"  >Scott David Kids</option>
+                                        <option value="1048"  >Sea Bowld</option>
+                                        <option value="1049"  >Sean John</option>
+                                        <option value="1050"  >Sears</option>
+                                        <option value="1051"  >Sebago</option>
+
+                                        <option value="1052"  >See Kai Run Kids</option>
+                                        <option value="1053"  >SELF ESTEEM</option>
+                                        <option value="1054"  >Sensi</option>
+                                        <option value="1055"  >Sergio Rossi</option>
+                                        <option value="1056"  >Sergio Zelcer</option>
+                                        <option value="1057"  >Sesame Street</option>
+
+                                        <option value="1058"  >Sesto Meucci</option>
+                                        <option value="1059"  >Sette</option>
+                                        <option value="1060"  >Seychelles</option>
+                                        <option value="1061"  >SHANE&SHAWN</option>
+                                        <option value="1062"  >Shannon Britt</option>
+                                        <option value="1064"  >Shaq</option>
+
+                                        <option value="1063"  >Sharif Studio</option>
+                                        <option value="1065"  >Shelli Segal</option>
+                                        <option value="1066"  >Shellys London</option>
+                                        <option value="1067"  >Shidali</option>
+                                        <option value="1068"  >Shift Racing</option>
+                                        <option value="1069"  >Shimano</option>
+
+                                        <option value="1070"  >Shoe Be 2</option>
+                                        <option value="1071"  >Shoe Be Doo</option>
+                                        <option value="1072"  >Siamanto</option>
+                                        <option value="1073"  >Sideout</option>
+                                        <option value="1074"  >Sidi</option>
+                                        <option value="1075"  >Sierra Designs</option>
+
+                                        <option value="1076"  >Sigerson Morrison</option>
+                                        <option value="1077"  >Silk Assets by DVF Studio</option>
+                                        <option value="1078"  >Simms</option>
+                                        <option value="1080"  >Simonetta Kids</option>
+                                        <option value="1081"  >Simple</option>
+                                        <option value="1082"  >Simple Kids</option>
+
+                                        <option value="1079"  >Sims</option>
+                                        <option value="1083"  >Siren</option>
+                                        <option value="1084"  >SixSixOne</option>
+                                        <option value="1085"  >SIXTY</option>
+                                        <option value="1086"  >Skechers</option>
+                                        <option value="1088"  >Skechers Kids</option>
+
+                                        <option value="1087"  >Skechers Cali</option>
+                                        <option value="1089"  >Skechers Work</option>
+                                        <option value="1090"  >Slippers International</option>
+                                        <option value="1091"  >SM New York</option>
+                                        <option value="1092"  >smartdogs</option>
+                                        <option value="1093"  >Smartwool</option>
+
+                                        <option value="1094"  >Smoky Mountain Boots</option>
+                                        <option value="1095"  >Sneaux</option>
+                                        <option value="1096"  >Snipe Shoes</option>
+                                        <option value="1097"  >Soda</option>
+                                        <option value="1098"  >Sofft</option>
+                                        <option value="1099"  >Soft Star Shoes</option>
+
+                                        <option value="1100"  >Softspots</option>
+                                        <option value="1101"  >SoftWalk</option>
+                                        <option value="1102"  >Soho Lab</option>
+                                        <option value="1103"  >Somethin' Else</option>
+                                        <option value="1104"  >Sonia Rykiel</option>
+                                        <option value="1105"  >Sonnet Kids</option>
+
+                                        <option value="1106"  >Sorel</option>
+                                        <option value="1107"  >Sorel Kids</option>
+                                        <option value="1108"  >Soul of Africa</option>
+                                        <option value="1109"  >Southpole</option>
+                                        <option value="1110"  >Sparkle</option>
+                                        <option value="1111"  >Specially made</option>
+
+                                        <option value="1112"  >SPEEDO</option>
+                                        <option value="1113"  >Speedwell</option>
+                                        <option value="1114"  >Sperry Kids</option>
+                                        <option value="1115"  >Sperry Top-Sider</option>
+                                        <option value="1116"  >Spider-Man</option>
+                                        <option value="1117"  >Spira</option>
+
+                                        <option value="1118"  >Sporto</option>
+                                        <option value="1119"  >Spot-Bilt</option>
+                                        <option value="1120"  >Spring Step</option>
+                                        <option value="1121"  >Springboost</option>
+                                        <option value="1122"  >Spyder</option>
+                                        <option value="1123"  >SRM Consulting</option>
+
+                                        <option value="1124"  >St. John's Bay</option>
+                                        <option value="1125"  >Stacy Adams</option>
+                                        <option value="1126"  >Stafford</option>
+                                        <option value="1127"  >Stegmann</option>
+                                        <option value="1128"  >Stegmann of Germany</option>
+                                        <option value="1129"  >Stella McCartney </option>
+
+                                        <option value="1130"  >Steve Madden</option>
+                                        <option value="1131"  >Steve Madden Kids</option>
+                                        <option value="1132"  >Steven</option>
+                                        <option value="1133"  >Stevies</option>
+                                        <option value="1134"  >STOCK</option>
+                                        <option value="1135"  >Stonefly</option>
+
+                                        <option value="1136"  >Stones and Bones Kids</option>
+                                        <option value="1137"  >Street Cars</option>
+                                        <option value="1138"  >Strength Shoe</option>
+                                        <option value="1139"  >Strictly Comfort</option>
+                                        <option value="1140"  >Stride Rite</option>
+                                        <option value="1141"  >Structure</option>
+
+                                        <option value="1142"  >Stuart Mc Guire</option>
+                                        <option value="1143"  >Stuart Weitzman</option>
+                                        <option value="1144"  >Studio M</option>
+                                        <option value="1145"  >Studio Pollini</option>
+                                        <option value="1146"  >Style & Company</option>
+                                        <option value="1147"  >Sudini</option>
+
+                                        <option value="1148"  >Sugar</option>
+                                        <option value="1149"  >Sugar Kids</option>
+                                        <option value="1150"  >Sunbay</option>
+                                        <option value="1151"  >Sunset Strip Shoes</option>
+                                        <option value="1152"  >Super</option>
+                                        <option value="1153"  >Superior Boot</option>
+
+                                        <option value="1154"  >Supra</option>
+                                        <option value="1155"  >Swear</option>
+                                        <option value="1156"  >T.U.K.</option>
+                                        <option value="1158"  >Ta-Da</option>
+                                        <option value="1157"  >Tabarca</option>
+                                        <option value="1159"  >Tahari</option>
+
+                                        <option value="1160"  >Taj collection</option>
+                                        <option value="1161"  >Tapeet by Vicini</option>
+                                        <option value="1162"  >Taryn by Taryn Rose</option>
+                                        <option value="1163"  >Taryn Rose</option>
+                                        <option value="1164"  >Tasso Elba</option>
+                                        <option value="1165"  >Tatami</option>
+
+                                        <option value="1166"  >Tatco</option>
+                                        <option value="1167"  >Tatiana</option>
+                                        <option value="1168"  >TaylorMade</option>
+                                        <option value="1169"  >Tecnica</option>
+                                        <option value="1170"  >Ted Baker</option>
+                                        <option value="1171"  >Teen Titans</option>
+
+                                        <option value="1172"  >Teknic</option>
+                                        <option value="1173"  >Terra Plana</option>
+                                        <option value="1174"  >Teva</option>
+                                        <option value="1175"  >Teva Kids</option>
+                                        <option value="75"  >The Art Company</option>
+                                        <option value="544"  >The Imfamous Black Sheep Brand</option>
+
+                                        <option value="1176"  >The North Face</option>
+                                        <option value="1177"  >The North Face Kids</option>
+                                        <option value="1178"  >Theory</option>
+                                        <option value="1179"  >Think!</option>
+                                        <option value="1180"  >thirtytwo</option>
+                                        <option value="1181"  >Thomas and Friends</option>
+
+                                        <option value="1182"  >Thomas Wylde</option>
+                                        <option value="1183"  >Thor MX</option>
+                                        <option value="1184"  >Thorlo</option>
+                                        <option value="1185"  >Thorogood</option>
+                                        <option value="1186"  >Tic-Tac-Toe</option>
+                                        <option value="1187"  >Tidewater</option>
+
+                                        <option value="1188"  >Timberland</option>
+                                        <option value="1189"  >Timberland Kids</option>
+                                        <option value="1190"  >Timberland PRO</option>
+                                        <option value="1191"  >Tingley</option>
+                                        <option value="1192"  >Titanitos Kids</option>
+                                        <option value="1193"  >TKS</option>
+
+                                        <option value="1195"  >To Boot New York</option>
+                                        <option value="1194"  >Toastee Toes</option>
+                                        <option value="1197"  >Tod's </option>
+                                        <option value="1198"  >Todd Welsh</option>
+                                        <option value="1196"  >Toe Warmers</option>
+                                        <option value="1199"  >Tommy Bahama</option>
+
+                                        <option value="1200"  >Tommy Hilfiger</option>
+                                        <option value="1201"  >Tommy Children's</option>
+                                        <option value="1202"  >TOMS</option>
+                                        <option value="1203"  >Tony Lama</option>
+                                        <option value="1204"  >Tory Burch</option>
+                                        <option value="1205"  >Totes</option>
+
+                                        <option value="1206"  >Touch Ups</option>
+                                        <option value="1207"  >Tour Master</option>
+                                        <option value="1208"  >Towncraft</option>
+                                        <option value="1209"  >Tracy Reese</option>
+                                        <option value="1210"  >Transport London</option>
+                                        <option value="1211"  >Tredstep Ireland</option>
+
+                                        <option value="1212"  >Tretorn</option>
+                                        <option value="1213"  >Tribeca</option>
+                                        <option value="1214"  >Trimfoot</option>
+                                        <option value="1215"  >Triple Five Soul</option>
+                                        <option value="1216"  >Tropical Escape</option>
+                                        <option value="1217"  >Trotters</option>
+
+                                        <option value="1218"  >Tsonga</option>
+                                        <option value="1219"  >Tsubo</option>
+                                        <option value="1220"  >Tsubo Kids</option>
+                                        <option value="1221"  >Tsukihoshi Kids</option>
+                                        <option value="1222"  >tty kids</option>
+                                        <option value="1223"  >Tubbs</option>
+
+                                        <option value="1224"  >Tufi Duek</option>
+                                        <option value="1225"  >Tundra Boots</option>
+                                        <option value="1226"  >Twisted X Boots</option>
+                                        <option value="1227"  >Two Lips</option>
+                                        <option value="1228"  >Tyler</option>
+                                        <option value="1229"  >Type Z</option>
+
+                                        <option value="1230"  >TYR Sport</option>
+                                        <option value="1231"  >Tyro</option>
+                                        <option value="1232"  >U.S. Polo Assn.</option>
+                                        <option value="1233"  >Ugg</option>
+                                        <option value="1234"  >Ugg Kids</option>
+                                        <option value="1235"  >UK Gear</option>
+
+                                        <option value="1236"  >Ulu</option>
+                                        <option value="1237"  >Umbro</option>
+                                        <option value="1238"  >Umi</option>
+                                        <option value="1239"  >UnderArmour</option>
+                                        <option value="1240"  >UNIONBAY</option>
+                                        <option value="1241"  >Unisa</option>
+
+                                        <option value="1242"  >United n?ude</option>
+                                        <option value="1243"  >Unlisted</option>
+                                        <option value="1244"  >Unlisted Kids</option>
+                                        <option value="1245"  >Valentino</option>
+                                        <option value="1246"  >Vaneli</option>
+                                        <option value="1247"  >Vans</option>
+
+                                        <option value="1248"  >Vans Kids</option>
+                                        <option value="1249"  >Vasque</option>
+                                        <option value="1250"  >Venettini Kids</option>
+                                        <option value="1251"  >Vera Wang</option>
+                                        <option value="1252"  >Vero Ve'</option>
+                                        <option value="1253"  >Versace</option>
+
+                                        <option value="1254"  >Versus Versace</option>
+                                        <option value="1255"  >Via Spiga</option>
+                                        <option value="1256"  >Vicini</option>
+                                        <option value="1257"  >Vigotti</option>
+                                        <option value="1258"  >Villa Scarpa Kids</option>
+                                        <option value="1259"  >Vince Camuto</option>
+
+                                        <option value="1260"  >Vis à Vie</option>
+                                        <option value="1261"  >Vision Street</option>
+                                        <option value="1262"  >VOLATILE</option>
+                                        <option value="1263"  >Volcom</option>
+                                        <option value="1264"  >Von Dutch</option>
+                                        <option value="1265"  >Vox</option>
+
+                                        <option value="1266"  >VPL</option>
+                                        <option value="1294"  >W-ING</option>
+                                        <option value="1267"  >Walkabout</option>
+                                        <option value="1269"  >Walking Cradles</option>
+                                        <option value="1268"  >WalkSmart</option>
+                                        <option value="1271"  >Walsh</option>
+
+                                        <option value="1270"  >Wanted Kids'</option>
+                                        <option value="1272"  >Warmbat</option>
+                                        <option value="1273"  >Warmers</option>
+                                        <option value="1274"  >Warrior Lacrosse</option>
+                                        <option value="1275"  >Water Gear</option>
+                                        <option value="1276"  >Weatherbeeta USA</option>
+
+                                        <option value="1277"  >Weebok</option>
+                                        <option value="1278"  >Weebok Layette</option>
+                                        <option value="1279"  >WESC</option>
+                                        <option value="1280"  >Wesenjak</option>
+                                        <option value="1281"  >West Marine</option>
+                                        <option value="1282"  >Western Chief</option>
+
+                                        <option value="1283"  >Western Work</option>
+                                        <option value="1284"  >What's What</option>
+                                        <option value="1285"  >White Cross</option>
+                                        <option value="1286"  >White Mountain</option>
+                                        <option value="1287"  >Wicked Road Warrior</option>
+                                        <option value="1288"  >Wild Rose</option>
+
+                                        <option value="1289"  >Willits</option>
+                                        <option value="1290"  >Wilson Sporting Goods</option>
+                                        <option value="1291"  >Wilson Tennis</option>
+                                        <option value="1292"  >Wilsons Leather</option>
+                                        <option value="1293"  >Wind & Weather</option>
+                                        <option value="1295"  >Wolky</option>
+
+                                        <option value="1296"  >Wolverine</option>
+                                        <option value="1297"  >Woodstock International</option>
+                                        <option value="1298"  >Woolrich</option>
+                                        <option value="1299"  >Work America</option>
+                                        <option value="1300"  >World Industries</option>
+                                        <option value="1301"  >Worthington</option>
+
+                                        <option value="1302"  >Worx</option>
+                                        <option value="1303"  >X-it</option>
+                                        <option value="1304"  >XOXO</option>
+                                        <option value="1305"  >Xsensible</option>
+                                        <option value="1306"  >Xtra </option>
+                                        <option value="1307"  >Yaktrax </option>
+
+                                        <option value="1308"  >Yellow Box</option>
+                                        <option value="1309"  >Yin</option>
+                                        <option value="1310"  >Yonex</option>
+                                        <option value="1311"  >Yves Saint Laurent</option>
+                                        <option value="1312"  >Z-Boy</option>
+                                        <option value="1313"  >Z-Coil</option>
+
+                                        <option value="1314"  >Zalo</option>
+                                        <option value="1316"  >Zamagni</option>
+                                        <option value="1317"  >Zamberlan</option>
+                                        <option value="1315"  >Zapato</option>
+                                        <option value="1318"  >Zeeta</option>
+                                        <option value="1322"  >Zegna</option>
+
+                                        <option value="1319"  >Zeha Berlin</option>
+                                        <option value="1320"  >Zelli Classic Exotics</option>
+                                        <option value="1321"  >Zengara</option>
+                                        <option value="1323"  >Zephz</option>
+                                        <option value="1325"  >Zigi NY</option>
+                                        <option value="1326"  >Zinc</option>
+
+                                        <option value="1324"  >Zipz</option>
+                                        <option value="1327"  >ZitaMaria</option>
+                                        <option value="1328"  >Zoo York</option>
+                                        <option value="1329"  >Zota</option>
+                                        <option value="1330"  >Zutano</option>
+                                      </select>
+
+                </p>
+                <p>
+                  <select id="sol_id" name="sol_id" style="width:120px;">
+                    <option selected="selected" value="">Select....</option>
+                                        <option value="1"  >400 NBS Gum Rubber</option>
+                                        <option value="2"  >Aggressive Rubber</option>
+                                        <option value="3"  >Combination</option>
+
+                                        <option value="4"  >Cork</option>
+                                        <option value="5"  >Crepe Rubber</option>
+                                        <option value="6"  >Diamond Tread Rubber</option>
+                                        <option value="7"  >Durable Non-Skid</option>
+                                        <option value="8"  >EVA/Rubber </option>
+                                        <option value="9"  >Flat Traction</option>
+
+                                        <option value="10"  >Gel</option>
+                                        <option value="11"  >Grippy Rubber</option>
+                                        <option value="12"  >Gum rubber</option>
+                                        <option value="13"  >High Abrasion Rubber</option>
+                                        <option value="14"  >Jelly</option>
+                                        <option value="15"  >Leather</option>
+
+                                        <option value="16"  >Lightweight Polyurethane</option>
+                                        <option value="17"  >Lug sole</option>
+                                        <option value="18"  >Man-Made Sole</option>
+                                        <option value="19"  >Matte Finished</option>
+                                        <option value="20"  >Molded Rubber</option>
+                                        <option value="21"  >Mondo Creeper</option>
+
+                                        <option value="22"  >Non-skid</option>
+                                        <option value="23"  >Patent</option>
+                                        <option value="24"  >Platic</option>
+                                        <option value="25"  >Polyurethane</option>
+                                        <option value="26"  >Rubber</option>
+                                        <option value="27"  >Skid-proof</option>
+
+                                        <option value="28"  >Synthetic</option>
+                                        <option value="29"  >TPU Slip Resistant</option>
+                                        <option value="30"  >Vibram Rubber Lug</option>
+                                        <option value="31"  >Vulcanized </option>
+                                        <option value="32"  >Wooden</option>
+                                      </select>
+
+                </p>
+                <p><span class="input">
+                  <select id="mtr_id[]" name="mtr_id[]" style="width:120px;height:100px;" multiple="multiple">
+                    <option selected="selected" value="">Any....</option>
+                                        <option value="1"  >Buffalo leather</option>
+                                        <option value="2"  >Calf Leather</option>
+                                        <option value="3"  >Croc print leather</option>
+
+                                        <option value="4"  >Denim</option>
+                                        <option value="5"  >Embossed Calf Leather</option>
+                                        <option value="6"  >Fabric</option>
+                                        <option value="7"  >Flannel</option>
+                                        <option value="8"  >Full grain leather</option>
+                                        <option value="9"  >Hair-Calf and Leather</option>
+
+                                        <option value="10"  >Kidskin Leather</option>
+                                        <option value="11"  >Leather</option>
+                                        <option value="12"  >Mesh </option>
+                                        <option value="13"  >Metallic leather</option>
+                                        <option value="14"  >Nappa Leather</option>
+                                        <option value="15"  >Nubuck</option>
+
+                                        <option value="16"  >Ostrich Leather</option>
+                                        <option value="17"  >Patent Leather</option>
+                                        <option value="18"  >Plastic</option>
+                                        <option value="19"  >Pony hair</option>
+                                        <option value="20"  >Printed leather</option>
+                                        <option value="21"  >Satin</option>
+
+                                        <option value="22"  >Satin and Leather</option>
+                                        <option value="23"  >Snake Skin Print</option>
+                                        <option value="24"  >Suede</option>
+                                        <option value="25"  >Suede leather</option>
+                                        <option value="26"  >Synthetic</option>
+                                        <option value="27"  >Tumbled leather</option>
+
+                                        <option value="28"  >Velvet</option>
+                                        <option value="29"  >Wild print leather</option>
+                                        <option value="30"  >Wool</option>
+                                        <option value="31"  >WP nubuck leather</option>
+                                      </select>
+                </span></p>
+                <p style="height:80px;">&nbsp;</p>
+
+                <p><span class="input">
+                 <select id="clo_id" name="clo_id" style="width:120px;">
+                   <option selected="selected" value="">Select....</option>
+                                      <option value="1"  >Adjustable Buckle</option>
+                                      <option value="2"  >Ankle-Strap</option>
+                                      <option value="3"  >Asymmetrical Zipper</option>
+                                      <option value="4"  >Buckle</option>
+
+                                      <option value="5"  >Elastic Band Heel Strap</option>
+                                      <option value="6"  >Hidden inside zipper</option>
+                                      <option value="7"  >Lace-up</option>
+                                      <option value="8"  >Monk Strap</option>
+                                      <option value="9"  >Oversized Buckle</option>
+                                      <option value="10"  >Quarter Ankle Strap</option>
+
+                                      <option value="11"  >Side Zip</option>
+                                      <option value="12"  >Slide</option>
+                                      <option value="13"  >Slingback w/Elastic</option>
+                                      <option value="14"  >Slip-on</option>
+                                      <option value="15"  >Snap</option>
+                                      <option value="16"  >Straps</option>
+
+                                      <option value="17"  >Velcro</option>
+                                      <option value="18"  >Wrap Around</option>
+                                      <option value="19"  >Zipper</option>
+                                    </select>
+               </span></p>
+               <p><span class="input">
+                 <select id="shw_id" name="shw_id" style="width:120px;">
+
+                   <option selected="selected" value="">Select....</option>
+                                      <option value="7"  >2A (AA)</option>
+                                      <option value="5"  >2A (AA)</option>
+                                      <option value="4"  >3A (AAA) </option>
+                                      <option value="12"  >3A (AAA)</option>
+                                      <option value="11"  >4A (AAAA)</option>
+
+                                      <option value="6"  >A</option>
+                                      <option value="3"  >B</option>
+                                      <option value="2"  >C</option>
+                                      <option value="9"  >N</option>
+                                      <option value="1"  >N</option>
+                                      <option value="8"  >S</option>
+
+                                      <option value="10"  >SS</option>
+                                      <option value="14"  >test</option>
+                                    </select>
+               </span></p>
+               <p><span class="input">
+                 <select id="hls_id" name="hls_id" style="width:120px;">
+                   <option selected="selected" value="">Select....</option>
+
+                                      <option value="1"  >Cork Platform</option>
+                                      <option value="2"  >Cork Wedge</option>
+                                      <option value="3"  >Covered</option>
+                                      <option value="4"  >Covered Kitten</option>
+                                      <option value="5"  >Covered Stiletto</option>
+                                      <option value="6"  >Covered wedge</option>
+
+                                      <option value="7"  >Cuban</option>
+                                      <option value="8"  >Kitten</option>
+                                      <option value="13"  >None</option>
+                                      <option value="9"  >Stacked</option>
+                                      <option value="10"  >Stiletto</option>
+                                      <option value="11"  >Unique Stacked</option>
+
+                                      <option value="12"  >Wedge</option>
+                                    </select>
+               </span></p>
+                <p><span class="input">
+                  <select id="sea_id" name="sea_id" style="width:120px;">
+                    <option selected="selected" value="">Select....</option>
+                                        <option value="4"  >Fall</option>
+
+                                        <option value="5"  >Rain</option>
+                                        <option value="2"  >Spring</option>
+                                        <option value="3"  >Summer</option>
+                                        <option value="1"  >Winter</option>
+                                      </select>
+                </span></p>
+                <p>
+
+                  <input type="text" name="store_name" style="width:120px;" id="store_name" />
+                </p>
+                
+              
+                
+              </div>
+            </div>
+          
+           
+         
+          </div>
+          
+          <div class="advbanners" id="advbanners">
+            <div id="flash3"><script src="js/AC_RunActiveContent.js" type="text/javascript"></script>
+<script type='text/javascript'>
+AC_FL_RunContent('codebase','http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,28,0','width','178','height','155','src','uploads/banner/3_bubble155x155d','quality','high','pluginspage','http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash','movie','uploads/banner/3_bubble155x155d' ); //end AC code
+
+</script><noscript><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,28,0" width="178" height="155">
+  <param name="movie" value="uploads/banner/3_bubble155x155d.swf" />
+  <param name="quality" value="high" />
+  <param name="url" valuetype="ref" value="bannerclicked.php?id=3">
+  <embed src="uploads/banner/3_bubble155x155d.swf" quality="high" pluginspage="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash" type="application/x-shockwave-flash" width="178" height="155"></embed>
+</object>
+
+</noscript></div><div><a href="bannerclicked.php?id=4"><img src="uploads/banner/4_banner2.gif" border=0 ></a></div><div><a href="bannerclicked.php?id=5"><img src="uploads/banner/5_banner1.gif" border=0 ></a></div>          </div>
+          
+        </div></form>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="footerbg">
+  <div class="footer">
+    <ul>
+                         <li><a href="pages.php?pageid=5">About Us</a> |</li>
+
+                                        <li><a href="pages.php?pageid=7">Terms and Conditions</a> |</li>
+                                        <li><a href="pages.php?pageid=8">Shipping Info</a> |</li>
+                                        <li><a href="pages.php?pageid=9">Privacy Policy</a> |</li>
+                                        <li><a href="contactus.php">Contact Us</a> |</li>
+
+                   <li>
+							                                <a href="advlogin.php">Advertisers</a>
+                                 </ul>
+    <br class="clear"/>
+    Copyright &copy; ShoeBreeze.com.Power by: INNOgenius.inc. All rights reserved. </div>
+</div>
+<!-- footer -->
+</body>
+
+</html>
