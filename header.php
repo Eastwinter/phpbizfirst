@@ -1,7 +1,7 @@
 <?php
-include("connect.php");
+include("Inc/connect.php");
 require_once('admin/phpthumb/phpthumb.class.php');
-include_once "class.phpmailer.php";
+include_once "Inc/Lib/class.phpmailer.php";
 
 $loginreq=array('memshoes.php','memwishlist.php','addshoes.php','sharepicture.php','sharepicture1.php','sharepicturereview.php','sharepicturereview1.php','memprofile.php','memshoes.php','addshoes.php','addshoecolor.php','shoecolors.php','memsavedsearches.php');
 
